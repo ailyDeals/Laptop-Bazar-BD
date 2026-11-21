@@ -99,10 +99,11 @@
           <div id="search-suggestions" class="hidden absolute left-0 right-0 top-11 bg-white text-slate-900 rounded-xl shadow-xl border border-slate-200 overflow-hidden z-50 max-h-80 overflow-y-auto"></div>
         </div>
 
-        <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
           <button id="pwa-install-btn" type="button" onclick="triggerPWAInstall()" class="hidden items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white/15 hover:bg-white/25 text-xs font-semibold whitespace-nowrap">Install</button>
           <button type="button" onclick="toggleLanguage()" id="lang-toggle-btn" class="h-8 sm:h-9 px-2 sm:px-2.5 rounded-lg bg-white/15 hover:bg-white/25 text-[11px] sm:text-xs font-bold tracking-wide whitespace-nowrap">BN / EN</button>
-          <button type="button" onclick="navigate('track')" class="hidden lg:inline-flex items-center gap-1.5 h-9 px-2.5 rounded-lg hover:bg-white/15 text-xs sm:text-sm font-medium whitespace-nowrap" data-i18n="trackOrder">অর্ডার ট্র্যাক</button>
+          <button type="button" onclick="navigate('mystery-box')" class="hidden md:inline-flex items-center gap-1 h-9 px-2.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold whitespace-nowrap shadow-sm">🎁 ১১৳ বক্স</button>
+          <button type="button" onclick="navigate('orders')" class="hidden lg:inline-flex items-center gap-1 h-9 px-2.5 rounded-lg hover:bg-white/15 text-xs sm:text-sm font-semibold whitespace-nowrap" data-i18n="orderHistory">অর্ডার হিস্ট্রি</button>
           <button type="button" onclick="openSellModal()" class="h-8 sm:h-9 px-2 sm:px-3 rounded-lg bg-[#F97316] hover:bg-[#EA580C] text-white text-[11px] sm:text-sm font-semibold whitespace-nowrap shadow-sm"><span class="sm:hidden">বিক্রি</span><span class="hidden sm:inline" data-i18n="sellItem">পণ্য বিক্রি করুন</span></button>
           <button type="button" id="header-account-btn" onclick="navigate('account')" class="hidden sm:inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-white text-[#0E9A4D] hover:bg-slate-100 text-xs sm:text-sm font-bold whitespace-nowrap">লগইন</button>
           <button type="button" onclick="toggleCartDrawer(true)" aria-label="Cart" class="relative h-8 sm:h-9 px-2 sm:px-2.5 rounded-lg bg-white/15 hover:bg-white/25 flex items-center gap-1 sm:gap-1.5">
@@ -123,8 +124,9 @@
     </div>
 
     <nav id="category-bar" class="bg-white text-slate-700 border-b border-slate-200">
-      <div class="max-w-7xl mx-auto px-3 sm:px-6 flex items-center justify-between gap-3">
+      <div class="max-w-7xl mx-auto px-3 sm:px-6 flex items-center justify-between gap-2">
         <div id="category-tabs" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-2"></div>
+        <button type="button" onclick="navigate('mystery-box')" class="md:hidden shrink-0 px-2.5 py-1 rounded-lg bg-amber-400 text-slate-950 text-[11px] font-extrabold whitespace-nowrap">🎁 ১১৳ বক্স</button>
       </div>
     </nav>
   </header>
@@ -223,6 +225,21 @@
     </div>
   </div>
 
+  <!-- Invoice Receipt Modal -->
+  <div id="invoice-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-[1px]">
+    <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in max-h-[90vh] flex flex-col">
+      <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between shrink-0">
+        <h3 class="font-display font-bold text-base">অর্ডার ইনভয়েস / রসিদ</h3>
+        <button type="button" onclick="closeModal('invoice-modal')" class="w-8 h-8 rounded-lg hover:bg-white/15 flex items-center justify-center">✕</button>
+      </div>
+      <div id="invoice-modal-body" class="p-5 overflow-y-auto text-sm space-y-4"></div>
+      <div class="px-5 py-3 bg-slate-50 border-t flex justify-end gap-2 shrink-0">
+        <button type="button" onclick="window.print()" class="h-9 px-4 rounded-lg bg-[#0E9A4D] text-white text-xs font-bold">প্রিন্ট / PDF সেভ</button>
+        <button type="button" onclick="closeModal('invoice-modal')" class="h-9 px-4 rounded-lg border text-xs font-semibold">বন্ধ করুন</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Assistant Chat Popup -->
   <div id="assistant-popup" class="hidden fixed bottom-16 md:bottom-20 left-3 right-3 sm:left-auto sm:right-4 z-50 sm:w-[340px] bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col animate-in">
     <div class="px-4 py-3 bg-[#0E9A4D] text-white flex items-center justify-between">
@@ -230,11 +247,11 @@
       <button type="button" onclick="toggleAssistant(false)" class="w-8 h-8 rounded-lg hover:bg-white/15 flex items-center justify-center">✕</button>
     </div>
     <div id="assistant-messages" class="h-72 overflow-y-auto p-3 space-y-2.5 bg-slate-50 text-sm">
-      <div class="bg-white border border-slate-200 rounded-xl p-2.5 text-slate-800 text-xs leading-relaxed">আসসালামু আলাইকুম! আমি <strong>Laptop Bazar BD</strong> অ্যাসিস্ট্যান্ট। বাজেট, ১৩% অ্যাডভান্স পেমেন্ট বা ডেলিভারি সম্পর্কে প্রশ্ন করুন।</div>
+      <div class="bg-white border border-slate-200 rounded-xl p-2.5 text-slate-800 text-xs leading-relaxed">আসসালামু আলাইকুম! আমি <strong>Laptop Bazar BD</strong> অ্যাসিস্ট্যান্ট। বাজেট, ১১৳ মিস্ট্রি বক্স, ১৩% অ্যাডভান্স বা ডেলিভারি সম্পর্কে প্রশ্ন করুন।</div>
     </div>
     <div class="px-3 py-2 bg-white border-t border-slate-100 flex gap-1.5 overflow-x-auto no-scrollbar">
+      <button type="button" onclick="sendAssistantQuick('১১ টাকার মিস্ট্রি বক্স কী?')" class="shrink-0 text-[11px] px-2.5 py-1 rounded-md bg-amber-100 text-amber-900 font-semibold">🎁 ১১৳ মিস্ট্রি বক্স</button>
       <button type="button" onclick="sendAssistantQuick('১৩% অ্যাডভান্স নিয়ম কী?')" class="shrink-0 text-[11px] px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">১৩% অ্যাডভান্স?</button>
-      <button type="button" onclick="sendAssistantQuick('৫০ হাজারের মধ্যে ভালো ল্যাপটপ?')" class="shrink-0 text-[11px] px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">৫০k বাজেট</button>
       <button type="button" onclick="sendAssistantQuick('ডেলিভারি চার্জ কত?')" class="shrink-0 text-[11px] px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">ডেলিভারি চার্জ</button>
     </div>
     <form onsubmit="handleAssistantSubmit(event)" class="p-2.5 bg-white border-t border-slate-200 flex gap-2">
@@ -250,8 +267,8 @@
 
   <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 grid grid-cols-6 h-14">
     <button type="button" onclick="navigate('home')" class="flex flex-col items-center justify-center text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="text-[10px] font-medium mt-0.5">হোম</span></button>
-    <button type="button" onclick="navigate('category', { slug: 'all' })" class="flex flex-col items-center justify-center text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span class="text-[10px] font-medium mt-0.5">ক্যাটাগরি</span></button>
-    <button type="button" onclick="focusMobileSearch()" class="flex flex-col items-center justify-center text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span class="text-[10px] font-medium mt-0.5">খুঁজুন</span></button>
+    <button type="button" onclick="navigate('mystery-box')" class="flex flex-col items-center justify-center text-[#F97316] font-bold"><span class="text-base leading-none">🎁</span><span class="text-[10px] font-bold mt-0.5">১১৳ বক্স</span></button>
+    <button type="button" onclick="navigate('orders')" class="flex flex-col items-center justify-center text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg><span class="text-[10px] font-medium mt-0.5">হিস্ট্রি</span></button>
     <button type="button" onclick="toggleCartDrawer(true)" class="relative flex flex-col items-center justify-center text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span id="mobile-cart-badge" class="absolute top-1 right-2 bg-[#F97316] text-white text-[9px] font-bold px-1 rounded-full tabular-nums">0</span><span class="text-[10px] font-medium mt-0.5">কার্ট</span></button>
     <button type="button" onclick="navigate('account')" class="flex flex-col items-center justify-center text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="text-[10px] font-medium mt-0.5">অ্যাকাউন্ট</span></button>
     <button type="button" onclick="toggleAssistant()" class="flex flex-col items-center justify-center text-[#0E9A4D] font-semibold"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="text-[10px] font-medium mt-0.5">সহায়তা</span></button>
@@ -260,7 +277,7 @@
   <footer class="bg-slate-900 text-slate-300 border-t border-slate-800 mt-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
       <div><h4 class="font-display font-bold text-white text-lg mb-2">Laptop Bazar BD</h4><p class="text-xs text-slate-400 leading-relaxed">বাংলাদেশের বিশ্বস্ত ল্যাপটপ, ডেস্কটপ ও টেক মার্কেটপ্লেস। ১৩% অ্যাডভান্স পেমেন্ট ও বাকি ক্যাশ অন ডেলিভারি।</p></div>
-      <div><h5 class="font-semibold text-white text-sm mb-3">দ্রুত লিংক</h5><ul class="space-y-2 text-xs"><li><a href="#/" onclick="navigate('home'); return false;" class="hover:text-white">হোম পেজ</a></li><li><a href="#/track" onclick="navigate('track'); return false;" class="hover:text-white">অর্ডার ট্র্যাকিং</a></li><li><a href="#/compare" onclick="navigate('compare'); return false;" class="hover:text-white">দাম তুলনা করুন</a></li></ul></div>
+      <div><h5 class="font-semibold text-white text-sm mb-3">দ্রুত লিংক</h5><ul class="space-y-2 text-xs"><li><a href="#/" onclick="navigate('home'); return false;" class="hover:text-white">হোম পেজ</a></li><li><a href="#/mystery-box" onclick="navigate('mystery-box'); return false;" class="hover:text-amber-300 text-amber-400 font-semibold">🎁 ১১ টাকার মিস্ট্রি বক্স</a></li><li><a href="#/orders" onclick="navigate('orders'); return false;" class="hover:text-white">অর্ডার হিস্ট্রি ও ট্র্যাকিং</a></li><li><a href="#/compare" onclick="navigate('compare'); return false;" class="hover:text-white">দাম তুলনা করুন</a></li></ul></div>
       <div><h5 class="font-semibold text-white text-sm mb-3">পেমেন্ট ও ডেলিভারি</h5><p class="text-xs text-slate-400 leading-relaxed">bKash, Nagad এবং Rocket এর মাধ্যমে মাত্র ১৩% অ্যাডভান্স পেমেন্ট করে অর্ডার নিশ্চিত করুন।</p></div>
       <div><h5 class="font-semibold text-white text-sm mb-3">যোগাযোগ ও শোরুম</h5><p class="text-xs text-slate-400">মাল্টিপ্ল্যান সেন্টার (লেভেল-৭), নিউ এলিফ্যান্ট রোড, ঢাকা।</p><p id="footer-hotline" class="text-xs font-semibold text-emerald-400 mt-2 tabular-nums">হটলাইন: 01711-000000</p></div>
     </div>
@@ -283,6 +300,7 @@
       messagingSenderId: "1015865016543",
       appId: "1:1015865016543:web:45f3186980e43f57bae96a"
     };
+
     const _RESOLVED_FIREBASE_CONFIG = typeof FIREBASE_CONFIG !== 'undefined'
       ? FIREBASE_CONFIG
       : (typeof firebaseConfig !== 'undefined' ? firebaseConfig : null);
@@ -294,7 +312,7 @@
 
     const I18N = {
       bn: {
-        trackOrder: 'অর্ডার ট্র্যাক', sellItem: 'পণ্য বিক্রি করুন', login: 'লগইন', account: 'অ্যাকাউন্ট',
+        trackOrder: 'অর্ডার ট্র্যাক', orderHistory: 'অর্ডার হিস্ট্রি', sellItem: 'পণ্য বিক্রি করুন', login: 'লগইন', account: 'অ্যাকাউন্ট',
         shoppingCart: 'আপনার শপিং কার্ট', compareNow: 'তুলনা করুন', allCategories: 'সকল ক্যাটাগরি',
         justIn: 'নতুন এসেছে (Just In)', hotProducts: 'হট ডিলস (Hot Products)', popularProducts: 'জনপ্রিয় পণ্য (Popular)',
         comparePrices: 'দাম তুলনা করুন (Compare Prices)', addToCart: 'কার্টে যোগ করুন', buyNow: 'এখনই কিনুন',
@@ -309,7 +327,7 @@
         emptyCart: 'আপনার কার্টটি বর্তমানে খালি!'
       },
       en: {
-        trackOrder: 'Track Order', sellItem: 'Sell Item', login: 'Login', account: 'Account',
+        trackOrder: 'Track Order', orderHistory: 'Order History', sellItem: 'Sell Item', login: 'Login', account: 'Account',
         shoppingCart: 'Shopping Cart', compareNow: 'Compare Now', allCategories: 'All Categories',
         justIn: 'Just In', hotProducts: 'Hot Products', popularProducts: 'Popular Products',
         comparePrices: 'Compare Prices', addToCart: 'Add to Cart', buyNow: 'Buy Now',
@@ -394,10 +412,30 @@
       { id: 'ban-3', titleBn: 'ব্যবহৃত ফ্রেশ বিজনেস ল্যাপটপ মেলা', titleEn: 'Grade-A Used Business Laptops', subtitleBn: 'দুবাই ও ইউরোপ থেকে ইমপোর্টেড ThinkPad, EliteBook ও MacBook', subtitleEn: 'Imported ThinkPad, EliteBook & MacBook with Replacement Warranty', imageUrl: '/images/prod-business.jpg', targetCategory: 'Laptop', order: 3, isActive: true }
     ];
 
+    const DEFAULT_MYSTERY_BOX = {
+      enabled: true,
+      titleBn: 'দারাজ স্টাইল ১১ টাকার মিস্ট্রি বক্স!',
+      subtitleBn: 'মাত্র ১১ টাকায় জিতে নিন প্রিমিয়াম ল্যাপটপ, SSD, কীবোর্ড, মাউস অথবা ৫০০৳ স্পেশাল ভাউচার!',
+      boxPrice: 11,
+      deliveryCharge: 0,
+      totalBoxes: 500,
+      soldCount: 24,
+      endAt: Date.now() + 86400000 * 3,
+      prizes: [
+        { id: 'prz-1', title: 'HP EliteBook 840 G8 Laptop (Grand Prize)', valueBDT: 41900, chancePercent: 2, stock: 2, badge: '🏆 Mega Prize' },
+        { id: 'prz-2', title: '256GB NVMe SSD / Mechanical Keyboard', valueBDT: 2800, chancePercent: 10, stock: 15, badge: '🔥 Hot Gift' },
+        { id: 'prz-3', title: 'Wireless Mouse + Laptop Backpack Combo', valueBDT: 1450, chancePercent: 25, stock: 50, badge: '🎒 Tech Combo' },
+        { id: 'prz-4', title: 'USB-C Hub + Cleaning Kit + Mousepad', valueBDT: 650, chancePercent: 33, stock: 120, badge: '🎁 Gift Box' },
+        { id: 'prz-5', title: '৳500 Instant Laptop Cash Voucher (LAPTOP500)', valueBDT: 500, chancePercent: 30, stock: 300, badge: '🎟 Voucher' }
+      ]
+    };
+
     const DEFAULT_SETTINGS = {
       bkashNumber: '01711-000000', nagadNumber: '01811-000000', rocketNumber: '01911-000000',
       whatsappNumber: '8801711000000', insideDhakaCharge: 80, outsideDhakaCharge: 150,
-      advancePercent: 13, adminEmails: ['admin@laptopbazarbd.com', 'sssopen420@gmail.com']
+      advancePercent: 13, coupons: 'LAPTOP500:500, WELCOME200:200',
+      adminEmails: ['laptopbd@gmail.com', 'admin@laptopbazarbd.com', 'sssopen420@gmail.com'],
+      mysteryBox: DEFAULT_MYSTERY_BOX
     };
 
     const DEFAULT_PRODUCTS = [
@@ -417,19 +455,54 @@
 
     const STORAGE_KEYS = {
       DB: 'lbb_sandbox_db_v1', CART: 'lbb_cart_v1', WISHLIST: 'lbb_wishlist_v1',
-      COMPARE: 'lbb_compare_v1', LANG: 'lbb_lang_v1', USER: 'lbb_sandbox_user_v1'
+      COMPARE: 'lbb_compare_v1', LANG: 'lbb_lang_v1', USER: 'lbb_sandbox_user_v1',
+      MY_ORDERS: 'lbb_my_order_ids_v1', RECENT_VIEWS: 'lbb_recent_views_v1'
     };
+
+    function readLocalOrderMeta() {
+      try {
+        const d = JSON.parse(localStorage.getItem(STORAGE_KEYS.MY_ORDERS) || '{}');
+        return { orderIds: Array.isArray(d.orderIds) ? d.orderIds : [], mysteryTicketIds: Array.isArray(d.mysteryTicketIds) ? d.mysteryTicketIds : [], lastPhone: d.lastPhone || '' };
+      } catch (_) { return { orderIds: [], mysteryTicketIds: [], lastPhone: '' }; }
+    }
 
     const state = {
       lang: localStorage.getItem(STORAGE_KEYS.LANG) || 'bn',
       route: 'home', routeParams: {}, products: [], categories: [], banners: [], orders: [],
-      settings: { ...DEFAULT_SETTINGS },
+      localOrders: [], myMysteryOrders: [], recentMysteryWinners: [], reviews: [],
+      settings: { ...DEFAULT_SETTINGS, mysteryBox: { ...DEFAULT_MYSTERY_BOX, prizes: DEFAULT_MYSTERY_BOX.prizes.slice() } },
       cart: JSON.parse(localStorage.getItem(STORAGE_KEYS.CART) || '[]'),
       wishlist: JSON.parse(localStorage.getItem(STORAGE_KEYS.WISHLIST) || '[]'),
       compareIds: JSON.parse(localStorage.getItem(STORAGE_KEYS.COMPARE) || '[]'),
+      recentViewIds: JSON.parse(localStorage.getItem(STORAGE_KEYS.RECENT_VIEWS) || '[]'),
+      historyLookupPhone: readLocalOrderMeta().lastPhone || '',
+      appliedCoupon: null, lastMysteryOrder: null,
       currentUser: null, heroIndex: 0, heroTimer: null, searchQuery: '', activeCategory: 'all',
       checkoutDirectItems: null, lastOrder: null, selectedGalleryImg: 0, pdpQty: 1
     };
+
+    function getMysteryBoxConfig() {
+      const mb = (state.settings && state.settings.mysteryBox) || {};
+      return {
+        ...DEFAULT_MYSTERY_BOX,
+        ...mb,
+        prizes: Array.isArray(mb.prizes) && mb.prizes.length ? mb.prizes : DEFAULT_MYSTERY_BOX.prizes.slice()
+      };
+    }
+
+    function saveLocalOrderId(orderId, phone, isMystery = false) {
+      const meta = readLocalOrderMeta();
+      if (isMystery) { if (!meta.mysteryTicketIds.includes(orderId)) meta.mysteryTicketIds.unshift(orderId); }
+      else { if (!meta.orderIds.includes(orderId)) meta.orderIds.unshift(orderId); }
+      if (phone) meta.lastPhone = phone;
+      localStorage.setItem(STORAGE_KEYS.MY_ORDERS, JSON.stringify(meta));
+    }
+
+    function recordRecentView(productId) {
+      if (!productId) return;
+      state.recentViewIds = [productId, ...state.recentViewIds.filter(id => id !== productId)].slice(0, 8);
+      localStorage.setItem(STORAGE_KEYS.RECENT_VIEWS, JSON.stringify(state.recentViewIds));
+    }
 
     const bc = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('lbb_realtime_sync') : null;
     function t(key) { return (I18N[state.lang] && I18N[state.lang][key]) || I18N.en[key] || key; }
@@ -464,7 +537,7 @@
     function readSandboxDb() {
       const raw = localStorage.getItem(STORAGE_KEYS.DB);
       if (raw) { try { return JSON.parse(raw); } catch (_) {} }
-      const initial = { products: DEFAULT_PRODUCTS, categories: DEFAULT_CATEGORIES, banners: DEFAULT_BANNERS, settings: DEFAULT_SETTINGS, orders: [], users: [], sellRequests: [], priceAlerts: [] };
+      const initial = { products: DEFAULT_PRODUCTS, categories: DEFAULT_CATEGORIES, banners: DEFAULT_BANNERS, settings: DEFAULT_SETTINGS, orders: [], mysteryBoxOrders: [], reviews: [], users: [], sellRequests: [], priceAlerts: [] };
       localStorage.setItem(STORAGE_KEYS.DB, JSON.stringify(initial));
       return initial;
     }
@@ -480,6 +553,10 @@
       state.banners = (db.banners || []).slice().sort((a, b) => (a.order || 0) - (b.order || 0));
       state.settings = { ...DEFAULT_SETTINGS, ...(db.settings || {}) };
       state.orders = (db.orders || []).slice().sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      state.localOrders = state.orders.slice();
+      state.myMysteryOrders = (db.mysteryBoxOrders || []).slice().sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      state.recentMysteryWinners = state.myMysteryOrders.filter(m => m.prizeTitle).slice(0, 8);
+      state.reviews = (db.reviews || []).slice().sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
       renderHeaderAndBars();
       renderCurrentRoute();
     }
@@ -553,8 +630,24 @@
             fbDb.collection('settings').doc('storeConfig').onSnapshot((docSnap) => {
               if (docSnap.exists) state.settings = { ...DEFAULT_SETTINGS, ...docSnap.data() };
               renderHeaderAndBars();
-              if (state.route === 'checkout') renderCurrentRoute();
+              if (['checkout', 'mystery-box', 'home'].includes(state.route)) renderCurrentRoute();
             });
+            fbDb.collection('reviews').onSnapshot((snap) => {
+              state.reviews = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+              if (state.route === 'product') renderCurrentRoute();
+            }, () => {});
+            fbDb.collection('mysteryBoxOrders').limit(25).onSnapshot((snap) => {
+              const all = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+              state.recentMysteryWinners = all.filter(m => m.prizeTitle).slice(0, 8);
+              const meta = readLocalOrderMeta();
+              const mine = all.filter(m => meta.mysteryTicketIds.includes(m.ticketId || m.id) || (state.historyLookupPhone && m.phone === state.historyLookupPhone) || (state.currentUser && state.currentUser.uid && m.userId === state.currentUser.uid));
+              if (mine.length) {
+                const map = new Map(state.myMysteryOrders.map(x => [x.ticketId || x.id, x]));
+                mine.forEach(x => map.set(x.ticketId || x.id, x));
+                state.myMysteryOrders = Array.from(map.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+              }
+              if (['mystery-box', 'orders'].includes(state.route)) renderCurrentRoute();
+            }, () => {});
             return;
           } catch (err) { console.error('Firebase init fallback:', err); }
         }
@@ -586,13 +679,70 @@
         writeSandboxDb(db);
         return orderData;
       },
+      async createMysteryBoxOrder(ticketData) {
+        if (IS_FIREBASE_CONFIGURED && fbDb) {
+          await fbDb.collection('mysteryBoxOrders').doc(ticketData.ticketId).set(ticketData);
+          try {
+            const mb = getMysteryBoxConfig();
+            await fbDb.collection('settings').doc('storeConfig').set({ mysteryBox: { ...mb, soldCount: Number(mb.soldCount || 0) + 1 } }, { merge: true });
+          } catch (_) {}
+          return ticketData;
+        }
+        const db = readSandboxDb();
+        db.mysteryBoxOrders = [ticketData, ...(db.mysteryBoxOrders || [])];
+        const curMb = (db.settings && db.settings.mysteryBox) || DEFAULT_MYSTERY_BOX;
+        db.settings = { ...(db.settings || DEFAULT_SETTINGS), mysteryBox: { ...curMb, soldCount: Number(curMb.soldCount || 0) + 1 } };
+        writeSandboxDb(db);
+        return ticketData;
+      },
+      async submitReview(review) {
+        if (IS_FIREBASE_CONFIGURED && fbDb) { await fbDb.collection('reviews').doc(review.id).set(review); return; }
+        const db = readSandboxDb(); db.reviews = [review, ...(db.reviews || [])]; writeSandboxDb(db);
+      },
+      async syncMyOrdersHistory(phoneLookup = '') {
+        const meta = readLocalOrderMeta();
+        const phone = (phoneLookup || meta.lastPhone || (state.currentUser && state.currentUser.phone) || '').trim();
+        if (IS_FIREBASE_CONFIGURED && fbDb) {
+          const ordMap = new Map();
+          const mbMap = new Map();
+          state.orders.forEach(o => ordMap.set(o.orderId || o.id, o));
+          await Promise.all((meta.orderIds || []).slice(0, 20).map(async id => {
+            try { const s = await fbDb.collection('orders').doc(id).get(); if (s.exists) ordMap.set(s.id, { id: s.id, ...s.data() }); } catch (_) {}
+          }));
+          await Promise.all((meta.mysteryTicketIds || []).slice(0, 20).map(async id => {
+            try { const s = await fbDb.collection('mysteryBoxOrders').doc(id).get(); if (s.exists) mbMap.set(s.id, { id: s.id, ...s.data() }); } catch (_) {}
+          }));
+          if (validateBDPhone(phone)) {
+            try {
+              const os = await fbDb.collection('orders').where('phone', '==', phone).get();
+              os.docs.forEach(d => ordMap.set(d.id, { id: d.id, ...d.data() }));
+            } catch (_) {}
+            try {
+              const ms = await fbDb.collection('mysteryBoxOrders').where('phone', '==', phone).get();
+              ms.docs.forEach(d => mbMap.set(d.id, { id: d.id, ...d.data() }));
+            } catch (_) {}
+          }
+          state.localOrders = Array.from(ordMap.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+          state.myMysteryOrders = Array.from(mbMap.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+          return;
+        }
+        const db = readSandboxDb();
+        state.localOrders = (db.orders || []).filter(o =>
+          meta.orderIds.includes(o.orderId) || (validateBDPhone(phone) && o.phone === phone) || (state.currentUser && state.currentUser.uid && o.userId === state.currentUser.uid)
+        ).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        state.myMysteryOrders = (db.mysteryBoxOrders || []).filter(m =>
+          meta.mysteryTicketIds.includes(m.ticketId) || (validateBDPhone(phone) && m.phone === phone) || (state.currentUser && state.currentUser.uid && m.userId === state.currentUser.uid)
+        ).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      },
       async findOrderForTracking(orderId, phone) {
         const cleanId = orderId.trim().toUpperCase(), cleanPhone = phone.trim();
         if (IS_FIREBASE_CONFIGURED && fbDb) {
-          const docSnap = await fbDb.collection('orders').doc(cleanId).get();
+          const col = cleanId.startsWith('MBX-') ? 'mysteryBoxOrders' : 'orders';
+          const docSnap = await fbDb.collection(col).doc(cleanId).get();
           if (docSnap.exists && docSnap.data().phone === cleanPhone) return { id: docSnap.id, ...docSnap.data() };
           return null;
         }
+        if (cleanId.startsWith('MBX-')) return state.myMysteryOrders.find(o => (o.ticketId || '').toUpperCase() === cleanId && o.phone === cleanPhone) || null;
         return state.orders.find(o => o.orderId.toUpperCase() === cleanId && o.phone === cleanPhone) || null;
       },
       async submitSellRequest(payload) {
@@ -637,14 +787,22 @@
       }
     }
 
+    function formatCountdown(targetTs) {
+      const diff = Math.max(0, Number(targetTs || 0) - Date.now());
+      const h = Math.floor(diff / 3600000), m = Math.floor((diff % 3600000) / 60000), s = Math.floor((diff % 60000) / 1000);
+      return `${String(h).padStart(2, '0')} : ${String(m).padStart(2, '0')} : ${String(s).padStart(2, '0')}`;
+    }
+
     function renderProductCard(p) {
       const inWish = state.wishlist.includes(p.id), inCompare = state.compareIds.includes(p.id);
       const discount = p.oldPrice && p.oldPrice > p.price ? Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100) : 0;
       const condLabel = p.condition === 'Used' ? t('usedCond') : t('newCond');
+      const lowStock = p.stock > 0 && p.stock <= 6;
       return `
         <article class="product-card bg-white rounded-xl border border-slate-200 overflow-hidden flex flex-col">
           <div class="relative aspect-[4/3] bg-slate-100 overflow-hidden cursor-pointer" onclick="openProduct('${escapeHtml(p.id)}')">
             ${renderImg((p.images && p.images[0]) || '', p.name)}
+            ${discount > 0 ? `<span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md bg-[#F97316] text-white text-[11px] font-bold tabular-nums shadow-sm">-${discount}%</span>` : ''}
             <button type="button" onclick="event.stopPropagation(); toggleWishlist('${escapeHtml(p.id)}')" aria-label="Wishlist" class="absolute top-2.5 right-2.5 w-9 h-9 rounded-full bg-white/90 hover:bg-white shadow-sm flex items-center justify-center ${inWish ? 'text-red-500' : 'text-slate-400 hover:text-red-500'}">
               <svg class="w-4 h-4" fill="${inWish ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
             </button>
@@ -652,7 +810,7 @@
           <div class="p-3.5 flex-1 flex flex-col">
             <div class="flex items-center justify-between gap-2 text-[11px] font-medium text-slate-500 mb-1">
               <span class="truncate">${escapeHtml(p.brand)} · <strong class="${p.condition === 'Used' ? 'text-amber-700' : 'text-[#0E9A4D]'}">${condLabel}</strong></span>
-              ${discount > 0 ? `<span class="tabular-nums text-[#F97316] font-semibold shrink-0">-${discount}%</span>` : ''}
+              ${lowStock ? `<span class="tabular-nums text-red-600 font-semibold shrink-0">মাত্র ${p.stock}টি</span>` : ''}
             </div>
             <h3 onclick="openProduct('${escapeHtml(p.id)}')" class="text-sm font-semibold text-slate-900 line-clamp-2 cursor-pointer hover:text-[#0E9A4D] leading-snug mb-2 min-h-[2.5rem]">${escapeHtml(p.name)}</h3>
             <div class="mt-auto pt-2 border-t border-slate-100">
@@ -675,8 +833,13 @@
       const visible = getVisibleProducts();
       const activeBanners = state.banners.filter(b => b.isActive !== false);
       const justIn = visible.slice(0, 4), hotProducts = visible.filter(p => p.isHot).slice(0, 4), popularProducts = visible.filter(p => p.isPopular).slice(0, 4), compareShowcase = visible.slice(0, 3);
+      const flashDeals = visible.filter(p => p.oldPrice && p.oldPrice > p.price).slice(0, 4);
+      const recentProducts = state.recentViewIds.map(id => visible.find(p => p.id === id)).filter(Boolean).slice(0, 4);
       const safeHeroIdx = activeBanners.length ? (state.heroIndex % activeBanners.length) : 0;
       const currentBanner = activeBanners[safeHeroIdx];
+      const mb = getMysteryBoxConfig(), mbRem = Math.max(0, Number(mb.totalBoxes || 0) - Number(mb.soldCount || 0));
+      const flashEndTs = Number(state.settings.flashSaleEndAt || (Date.now() + 86400000));
+
       return `
         <div class="space-y-8 animate-in">
           ${currentBanner ? `
@@ -690,7 +853,7 @@
                     <p class="text-xs sm:text-sm text-slate-200 mb-4 line-clamp-2">${escapeHtml(state.lang === 'bn' ? currentBanner.subtitleBn : currentBanner.subtitleEn)}</p>
                     <div class="flex flex-wrap items-center gap-2.5">
                       <button type="button" onclick="selectCategory('${escapeHtml(currentBanner.targetCategory || 'Laptop')}')" class="h-10 px-5 rounded-lg bg-[#0E9A4D] hover:bg-[#0A7A3C] text-white text-xs sm:text-sm font-semibold">${state.lang === 'bn' ? 'এখনই দেখুন' : 'Shop Now'}</button>
-                      <button type="button" onclick="navigate('track')" class="h-10 px-4 rounded-lg bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm font-semibold backdrop-blur-sm">${t('trackOrder')}</button>
+                      <button type="button" onclick="navigate('orders')" class="h-10 px-4 rounded-lg bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm font-semibold backdrop-blur-sm">অর্ডার হিস্ট্রি</button>
                     </div>
                   </div>
                 </div>
@@ -698,9 +861,63 @@
               ${activeBanners.length > 1 ? `<button type="button" onclick="shiftHero(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/45 text-white flex items-center justify-center">‹</button><button type="button" onclick="shiftHero(1)" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/45 text-white flex items-center justify-center">›</button>` : ''}
             </section>
           ` : ''}
+
+          <!-- Amazon / Daraz Trust Assurance Strip -->
+          <section class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+            <div class="bg-white rounded-xl border border-slate-200 p-3.5 flex items-center gap-3"><div class="w-9 h-9 rounded-lg bg-emerald-50 text-[#0E9A4D] flex items-center justify-center font-bold shrink-0">✓</div><div class="min-w-0"><p class="text-xs sm:text-sm font-bold text-slate-900">৭ দিনের রিপ্লেসমেন্ট</p><p class="text-[11px] text-slate-500">সমস্যা পেলেই সহজ পরিবর্তন</p></div></div>
+            <div class="bg-white rounded-xl border border-slate-200 p-3.5 flex items-center gap-3"><div class="w-9 h-9 rounded-lg bg-orange-50 text-[#F97316] flex items-center justify-center font-bold shrink-0">💳</div><div class="min-w-0"><p class="text-xs sm:text-sm font-bold text-slate-900">১৩% অ্যাডভান্স + COD</p><p class="text-[11px] text-slate-500">বাকি টাকা হাতে পেয়ে পরিশোধ</p></div></div>
+            <div class="bg-white rounded-xl border border-slate-200 p-3.5 flex items-center gap-3"><div class="w-9 h-9 rounded-lg bg-emerald-50 text-[#0E9A4D] flex items-center justify-center font-bold shrink-0">🚚</div><div class="min-w-0"><p class="text-xs sm:text-sm font-bold text-slate-900">ফাস্ট হোম ডেলিভারি</p><p class="text-[11px] text-slate-500">সারা বাংলাদেশে ৪৮-৭২ ঘণ্টায়</p></div></div>
+            <div class="bg-white rounded-xl border border-slate-200 p-3.5 flex items-center gap-3"><div class="w-9 h-9 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center font-bold shrink-0">🛡️</div><div class="min-w-0"><p class="text-xs sm:text-sm font-bold text-slate-900">ভেরিফাইড কোয়ালিটি</p><p class="text-[11px] text-slate-500">টেস্টেড অরিজিনাল ল্যাপটপ</p></div></div>
+          </section>
+
+          <!-- Daraz Style 11 BDT Mystery Box Promo Banner -->
+          ${mb.enabled !== false ? `
+            <section class="rounded-2xl bg-gradient-to-r from-[#0E9A4D] via-emerald-700 to-slate-900 text-white p-5 sm:p-7 shadow-md border border-emerald-500/30">
+              <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
+                <div class="space-y-2 max-w-2xl">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="px-2.5 py-0.5 rounded-md bg-amber-400 text-slate-950 text-xs font-extrabold">দারাজ স্টাইল ১১৳ অফার</span>
+                    <span class="text-xs font-semibold text-emerald-200 tabular-nums">বাকি আছে মাত্র ${mbRem} / ${mb.totalBoxes} টি বক্স</span>
+                  </div>
+                  <h2 class="font-display text-xl sm:text-2xl font-extrabold">${escapeHtml(mb.titleBn)}</h2>
+                  <p class="text-xs sm:text-sm text-emerald-100">${escapeHtml(mb.subtitleBn)}</p>
+                </div>
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+                  <div class="bg-black/30 border border-white/15 rounded-xl px-4 py-2.5 text-center">
+                    <span class="block text-[10px] uppercase tracking-wider text-amber-300">অফার শেষ হতে</span>
+                    <span id="mb-countdown-timer" data-end="${Number(mb.endAt || (Date.now() + 86400000 * 3))}" class="font-mono text-base sm:text-lg font-extrabold tabular-nums">${formatCountdown(mb.endAt || (Date.now() + 86400000 * 3))}</span>
+                  </div>
+                  <button type="button" onclick="navigate('mystery-box')" class="h-12 px-6 rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white font-extrabold text-sm shadow-lg whitespace-nowrap">🎁 মাত্র ${formatBDT(mb.boxPrice || 11)} খুলুন →</button>
+                </div>
+              </div>
+            </section>
+          ` : ''}
+
+          <!-- Daraz Flash Sale Strip -->
+          ${flashDeals.length ? `
+            <section class="bg-white rounded-2xl border border-orange-200 p-4 sm:p-5 space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-orange-100">
+                <div class="flex items-center gap-3">
+                  <h2 class="font-display text-lg sm:text-xl font-extrabold text-[#EA580C]">⚡ ফ্ল্যাশ সেল (Flash Sale)</h2>
+                  <span id="flash-sale-timer" data-end="${flashEndTs}" class="px-2.5 py-1 rounded-lg bg-slate-900 text-amber-300 font-mono text-xs sm:text-sm font-bold tabular-nums">${formatCountdown(flashEndTs)}</span>
+                </div>
+                <button type="button" onclick="selectCategory('all')" class="text-xs sm:text-sm font-bold text-[#F97316] hover:underline">সব অফার দেখুন →</button>
+              </div>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">${flashDeals.map(renderProductCard).join('')}</div>
+            </section>
+          ` : ''}
+
           <section><div class="flex items-center justify-between mb-4"><h2 class="font-display text-lg sm:text-xl font-bold text-slate-900">${t('justIn')}</h2><button type="button" onclick="selectCategory('all')" class="text-xs sm:text-sm font-semibold text-[#0E9A4D] hover:underline">সব দেখুন →</button></div><div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">${justIn.map(renderProductCard).join('')}</div></section>
           <section><div class="flex items-center justify-between mb-4"><h2 class="font-display text-lg sm:text-xl font-bold text-slate-900">${t('hotProducts')}</h2><span class="text-xs font-semibold text-[#F97316]">সীমিত স্টক অফার</span></div><div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">${(hotProducts.length ? hotProducts : visible.slice(0, 4)).map(renderProductCard).join('')}</div></section>
           <section><div class="flex items-center justify-between mb-4"><h2 class="font-display text-lg sm:text-xl font-bold text-slate-900">${t('popularProducts')}</h2><button type="button" onclick="selectCategory('Laptop')" class="text-xs sm:text-sm font-semibold text-[#0E9A4D] hover:underline">সব ল্যাপটপ →</button></div><div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">${(popularProducts.length ? popularProducts : visible.slice(0, 4)).map(renderProductCard).join('')}</div></section>
+
+          ${recentProducts.length ? `
+            <section>
+              <div class="flex items-center justify-between mb-4"><h2 class="font-display text-lg sm:text-xl font-bold text-slate-900">👀 সম্প্রতি দেখেছেন (Recently Viewed)</h2></div>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">${recentProducts.map(renderProductCard).join('')}</div>
+            </section>
+          ` : ''}
+
           <section class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6">
             <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
               <div><h2 class="font-display text-lg sm:text-xl font-bold text-slate-900">${t('comparePrices')}</h2><p class="text-xs text-slate-500">জনপ্রিয় ল্যাপটপগুলোর স্পেসিফিকেশন ও দাম এক নজরে তুলনা করুন</p></div>
@@ -739,6 +956,7 @@
       const imgs = (p.images && p.images.length) ? p.images : ['/images/prod-ultrabook.jpg'];
       const mainImg = imgs[state.selectedGalleryImg % imgs.length], specEntries = Object.entries(p.specs || {}), inWish = state.wishlist.includes(p.id);
       const similar = getVisibleProducts().filter(x => x.id !== p.id && x.category === p.category).slice(0, 4);
+      const prodReviews = state.reviews.filter(r => r.productId === p.id);
       const advancePreview = Math.round(p.price * ((state.settings.advancePercent || 13) / 100));
       return `
         <div class="space-y-8 animate-in">
@@ -750,7 +968,7 @@
             <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 space-y-4">
               <div class="flex items-center justify-between text-xs text-slate-500"><span>SKU: <strong class="tabular-nums text-slate-800">${escapeHtml(p.sku || p.id)}</strong> · ${escapeHtml(p.brand)} · <strong>${escapeHtml(p.condition)}</strong></span><button type="button" onclick="shareProduct('${escapeHtml(p.id)}')" class="text-[#0E9A4D] font-semibold">${t('share')}</button></div>
               <h1 class="font-display text-xl sm:text-2xl font-bold text-slate-900">${escapeHtml(p.name)}</h1>
-              <div class="flex items-center gap-3 text-xs font-semibold"><span class="${p.stock > 0 ? 'text-[#0E9A4D]' : 'text-red-600'}">${p.stock > 0 ? `✓ ${t('inStock')} (${p.stock})` : t('outOfStock')}</span><span>|</span><span class="tabular-nums text-slate-600">★ ${Number(p.rating || 4.8).toFixed(1)} · ${p.sellerCount || 6} ${t('sellers')}</span></div>
+              <div class="flex items-center gap-3 text-xs font-semibold"><span class="${p.stock > 0 ? 'text-[#0E9A4D]' : 'text-red-600'}">${p.stock > 0 ? `✓ ${t('inStock')} (${p.stock})` : t('outOfStock')}</span><span>|</span><span class="tabular-nums text-slate-600">★ ${Number(p.rating || 4.8).toFixed(1)} · ${prodReviews.length || p.sellerCount || 6} রিভিউ ও সেলার</span></div>
               <p class="text-sm text-slate-600">${escapeHtml(p.shortDesc)}</p>
               <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-1.5">
                 <div class="flex items-baseline gap-3"><span class="text-2xl sm:text-3xl font-bold text-[#0E9A4D] tabular-nums">${formatBDT(p.price)}</span>${p.oldPrice && p.oldPrice > p.price ? `<span class="text-sm text-slate-400 line-through tabular-nums">${formatBDT(p.oldPrice)}</span>` : ''}</div>
@@ -770,6 +988,44 @@
             </div>
           </div>
           <section class="bg-white rounded-2xl border border-slate-200 overflow-hidden"><div class="px-5 py-4 border-b border-slate-200 bg-slate-50"><h2 class="font-display font-bold text-base sm:text-lg">${t('specsTitle')}</h2></div><div class="divide-y divide-slate-100">${specEntries.map(([k, v]) => `<div class="grid grid-cols-1 sm:grid-cols-12 px-5 py-3 text-sm"><div class="sm:col-span-4 font-semibold text-slate-600">${escapeHtml(k)}</div><div class="sm:col-span-8 text-slate-900">${escapeHtml(v)}</div></div>`).join('')}</div></section>
+
+          <!-- Verified Customer Reviews Section -->
+          <section class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 space-y-5">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3">
+              <div>
+                <h2 class="font-display font-bold text-base sm:text-lg">কাস্টমার রিভিউ ও রেটিং (${prodReviews.length})</h2>
+                <p class="text-xs text-slate-500">গড় রেটিং: <strong class="text-amber-600">★ ${Number(p.rating || 4.8).toFixed(1)} / 5.0</strong></p>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              <form onsubmit="handleReviewSubmit(event, '${escapeHtml(p.id)}')" class="lg:col-span-5 bg-slate-50 rounded-xl border p-4 space-y-3 text-xs sm:text-sm">
+                <h3 class="font-bold text-sm">আপনার রিভিউ লিখুন</h3>
+                <input id="rev-name" required value="${escapeHtml(state.currentUser ? state.currentUser.name : '')}" placeholder="আপনার নাম *" class="w-full h-9 px-3 rounded-lg border bg-white" />
+                <select id="rev-rating" class="w-full h-9 px-3 rounded-lg border bg-white font-semibold">
+                  <option value="5">★★★★★ (5 - চমৎকার)</option>
+                  <option value="4">★★★★☆ (4 - ভালো)</option>
+                  <option value="3">★★★☆☆ (3 - মোটামুটি)</option>
+                  <option value="2">★★☆☆☆ (2 - সন্তোষজনক নয়)</option>
+                  <option value="1">★☆☆☆☆ (1 - খারাপ)</option>
+                </select>
+                <textarea id="rev-comment" required rows="2" placeholder="পণ্যটি সম্পর্কে আপনার অভিজ্ঞতা লিখুন..." class="w-full p-2.5 rounded-lg border bg-white"></textarea>
+                <button type="submit" class="w-full h-10 rounded-lg bg-[#0E9A4D] text-white font-bold text-xs sm:text-sm">রিভিউ পোস্ট করুন</button>
+              </form>
+              <div class="lg:col-span-7 space-y-3">
+                ${prodReviews.length ? prodReviews.map(r => `
+                  <div class="p-3.5 rounded-xl border border-slate-200 space-y-1">
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="font-bold text-slate-900">${escapeHtml(r.reviewerName)} <span class="text-[10px] text-[#0E9A4D] font-semibold">✓ Verified User</span></span>
+                      <span class="text-amber-500 font-bold">${'★'.repeat(Number(r.rating || 5))}</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-700">${escapeHtml(r.comment)}</p>
+                    <p class="text-[10px] text-slate-400">${new Date(r.createdAt || Date.now()).toLocaleDateString()}</p>
+                  </div>
+                `).join('') : `<p class="text-xs text-slate-500 py-4">এখনো কোনো রিভিউ নেই — প্রথম রিভিউটি আপনিই দিন!</p>`}
+              </div>
+            </div>
+          </section>
+
           ${similar.length ? `<section><h2 class="font-display text-lg font-bold mb-4">একই ক্যাটাগরির আরও পণ্য</h2><div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">${similar.map(renderProductCard).join('')}</div></section>` : ''}
         </div>
       `;
@@ -806,6 +1062,15 @@
       `;
     }
 
+    function parseCoupons() {
+      const map = {}, raw = String(state.settings.coupons || 'LAPTOP500:500, WELCOME200:200');
+      raw.split(',').forEach(part => {
+        const [c, amt] = part.split(':').map(x => (x || '').trim());
+        if (c && Number(amt) > 0) map[c.toUpperCase()] = Number(amt);
+      });
+      return map;
+    }
+
     const checkoutDraft = { name: '', phone: '', whatsapp: '', division: 'Dhaka', district: 'Dhaka', thana: 'Dhanmondi', address: '', deliveryMethod: 'inside', notes: '', paymentMethod: 'bKash', trxId: '', senderNumber: '', screenshotFile: null, screenshotPreview: '' };
     function getCheckoutItems() {
       if (state.checkoutDirectItems && state.checkoutDirectItems.length) return state.checkoutDirectItems;
@@ -816,11 +1081,24 @@
       let deliveryCharge = 0;
       if (checkoutDraft.deliveryMethod === 'inside') deliveryCharge = Number(state.settings.insideDhakaCharge ?? 80);
       else if (checkoutDraft.deliveryMethod === 'outside') deliveryCharge = Number(state.settings.outsideDhakaCharge ?? 150);
-      const total = subtotal + deliveryCharge, advPct = Number(state.settings.advancePercent ?? 13);
+      const discount = state.appliedCoupon ? Math.min(subtotal, Number(state.appliedCoupon.amount || 0)) : 0;
+      const total = Math.max(0, subtotal - discount + deliveryCharge), advPct = Number(state.settings.advancePercent ?? 13);
       const advance = Math.round((total * advPct) / 100), remaining = Math.max(0, total - advance);
-      return { subtotal, deliveryCharge, total, advPct, advance, remaining };
+      return { subtotal, discount, deliveryCharge, total, advPct, advance, remaining };
     }
     function getActiveDepositNumber(m) { return m === 'bKash' ? state.settings.bkashNumber : m === 'Nagad' ? state.settings.nagadNumber : state.settings.rocketNumber; }
+
+    function applyCheckoutCoupon() {
+      const inp = document.getElementById('co-coupon-input');
+      const code = (inp ? inp.value : '').trim().toUpperCase();
+      if (!code) return showToast('কুপন কোড লিখুন', 'error');
+      const map = parseCoupons();
+      if (!map[code]) return showToast('সঠিক কুপন কোড নয়! (যেমন: LAPTOP500)', 'error');
+      state.appliedCoupon = { code, amount: map[code] };
+      showToast(`কুপন "${code}" অ্যাপ্লাই হয়েছে (${formatBDT(map[code])} ছাড়)!`);
+      renderCurrentRoute();
+    }
+    function removeCheckoutCoupon() { state.appliedCoupon = null; renderCurrentRoute(); }
 
     function renderCheckout() {
       const items = getCheckoutItems();
@@ -870,8 +1148,23 @@
             <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 p-5 space-y-4 lg:sticky lg:top-28">
               <h2 class="font-display font-bold text-base border-b pb-2">অর্ডার সামারি (${items.length})</h2>
               <div class="space-y-3 max-h-60 overflow-y-auto">${items.map((item, idx) => `<div class="flex items-center gap-3 pb-2 border-b last:border-0"><div class="w-12 h-10 rounded bg-slate-100 overflow-hidden shrink-0">${renderImg((item.images && item.images[0]) || '', item.name)}</div><div class="flex-1 min-w-0"><p class="text-xs font-semibold truncate">${escapeHtml(item.name)}</p><p class="text-[11px] text-slate-500 tabular-nums">${formatBDT(item.price)} × ${item.qty}</p></div><div class="flex items-center gap-1"><button type="button" onclick="adjustCheckoutItemQty(${idx}, -1)" class="w-6 h-6 rounded border text-xs font-bold">-</button><span class="w-5 text-center text-xs font-bold tabular-nums">${item.qty}</span><button type="button" onclick="adjustCheckoutItemQty(${idx}, 1)" class="w-6 h-6 rounded border text-xs font-bold">+</button></div></div>`).join('')}</div>
+              <!-- Coupon Box -->
+              <div class="pt-2 border-t">
+                ${state.appliedCoupon ? `
+                  <div class="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2 text-xs">
+                    <span>কুপন: <strong class="text-[#0E9A4D]">${escapeHtml(state.appliedCoupon.code)}</strong> (-${formatBDT(totals.discount)})</span>
+                    <button type="button" onclick="removeCheckoutCoupon()" class="text-red-600 font-bold">সরান</button>
+                  </div>
+                ` : `
+                  <div class="flex gap-2">
+                    <input id="co-coupon-input" type="text" placeholder="প্রোমো কোড (যেমন: LAPTOP500)" class="flex-1 h-9 px-3 rounded-lg border text-xs uppercase" />
+                    <button type="button" onclick="applyCheckoutCoupon()" class="h-9 px-3.5 rounded-lg bg-slate-900 text-white text-xs font-bold">Apply</button>
+                  </div>
+                `}
+              </div>
               <div class="space-y-2 pt-3 border-t text-sm">
                 <div class="flex justify-between text-slate-600"><span>পণ্যের মূল্য</span><span class="font-semibold tabular-nums">${formatBDT(totals.subtotal)}</span></div>
+                ${totals.discount > 0 ? `<div class="flex justify-between text-[#0E9A4D] font-semibold"><span>কুপন ছাড়</span><span class="tabular-nums">-${formatBDT(totals.discount)}</span></div>` : ''}
                 <div class="flex justify-between text-slate-600"><span>ডেলিভারি চার্জ</span><span class="font-semibold tabular-nums">${totals.deliveryCharge === 0 ? 'Free' : formatBDT(totals.deliveryCharge)}</span></div>
                 <div class="flex justify-between font-bold text-base pt-2 border-t"><span>মোট মূল্য</span><span class="tabular-nums">${formatBDT(totals.total)}</span></div>
                 <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 flex justify-between items-center text-emerald-900"><span class="text-xs font-bold">অ্যাডভান্স (${totals.advPct}%)</span><span class="text-base font-bold text-[#0E9A4D] tabular-nums">${formatBDT(totals.advance)}</span></div>
@@ -898,8 +1191,203 @@
             <div class="flex justify-between"><span class="text-orange-700">বাকি COD:</span><strong class="text-[#EA580C] tabular-nums">${formatBDT(o.remainingAmount)}</strong></div>
           </div>
           <div class="flex flex-col sm:flex-row gap-3">
-            <a href="https://wa.me/${waPhone}?text=${waMsg}" target="_blank" rel="noopener noreferrer" class="flex-1 h-11 rounded-xl bg-[#0E9A4D] text-white font-bold text-sm flex items-center justify-center">WhatsApp-এ অর্ডার কনফার্ম করুন</a>
-            <button type="button" onclick="state.routeParams={lastTrackId:'${escapeHtml(o.orderId)}',lastTrackPhone:'${escapeHtml(o.phone)}',trackedOrder:state.lastOrder}; navigate('track');" class="h-11 px-5 rounded-xl border text-sm font-semibold">ট্র্যাক করুন</button>
+            <a href="https://wa.me/${waPhone}?text=${waMsg}" target="_blank" rel="noopener noreferrer" class="flex-1 h-11 rounded-xl bg-[#0E9A4D] text-white font-bold text-sm flex items-center justify-center">WhatsApp-এ কনফার্ম করুন</a>
+            <button type="button" onclick="navigate('orders')" class="h-11 px-5 rounded-xl border text-sm font-semibold">আমার অর্ডার হিস্ট্রি</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderOrderHistory() {
+      const regMap = new Map();
+      [...state.localOrders, ...state.orders].forEach(o => { if (o && o.orderId) regMap.set(o.orderId, o); });
+      const allRegular = Array.from(regMap.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      const allMystery = state.myMysteryOrders.slice().sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      const steps = ['Pending Payment Verification', 'Advance Received', 'Processing', 'Shipped', 'Delivered'];
+
+      return `
+        <div class="max-w-4xl mx-auto space-y-6 animate-in">
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h1 class="font-display text-xl sm:text-2xl font-bold text-slate-900">আমার অর্ডার হিস্ট্রি (Order History)</h1>
+                <p class="text-xs text-slate-500">আপনার করা সকল সাধারণ অর্ডার এবং ১১৳ মিস্ট্রি বক্সের হিস্ট্রি ও লাইভ স্ট্যাটাস</p>
+              </div>
+              <button type="button" onclick="navigate('track')" class="h-9 px-3.5 rounded-lg border text-xs font-semibold hover:bg-slate-50">ID দিয়ে ট্র্যাক</button>
+            </div>
+            <form onsubmit="handleOrderHistoryPhoneLookup(event)" class="flex flex-col sm:flex-row gap-2.5">
+              <input id="hist-phone-input" type="tel" required value="${escapeHtml(state.historyLookupPhone || '')}" placeholder="মোবাইল নম্বর দিয়ে সব অর্ডার খুঁজুন (01XXXXXXXXX)" class="flex-1 h-10 px-3.5 rounded-lg border border-slate-300 text-sm tabular-nums" />
+              <button type="submit" class="h-10 px-5 rounded-lg bg-[#0E9A4D] hover:bg-[#0A7A3C] text-white text-xs sm:text-sm font-bold">হিস্ট্রি লোড করুন</button>
+            </form>
+          </div>
+
+          <!-- Regular Orders -->
+          <section class="space-y-3">
+            <h2 class="font-display font-bold text-base sm:text-lg text-slate-900">পণ্য অর্ডারসমূহ (${allRegular.length})</h2>
+            ${allRegular.length ? allRegular.map(o => {
+              const curIdx = steps.indexOf(o.status);
+              return `
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 space-y-3">
+                  <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b">
+                    <div>
+                      <strong class="text-sm sm:text-base tabular-nums text-slate-900">${escapeHtml(o.orderId)}</strong>
+                      <span class="text-xs text-slate-500 ml-2">${new Date(o.createdAt || Date.now()).toLocaleString()}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="px-2.5 py-1 rounded-md bg-emerald-50 text-[#0E9A4D] text-xs font-bold">${escapeHtml(o.status)}</span>
+                      <button type="button" onclick="openInvoiceModal('${escapeHtml(o.orderId)}')" class="h-8 px-3 rounded-lg border text-xs font-semibold hover:bg-slate-50">📄 রসিদ</button>
+                    </div>
+                  </div>
+                  <div class="text-xs sm:text-sm text-slate-700 space-y-1">
+                    ${(o.items || []).map(it => `<div class="flex justify-between"><span>${escapeHtml(it.name)} × ${it.qty}</span><span class="tabular-nums font-semibold">${formatBDT(it.price * it.qty)}</span></div>`).join('')}
+                  </div>
+                  <div class="grid grid-cols-3 gap-2 text-xs pt-2 border-t">
+                    <div class="p-2 rounded-lg bg-slate-50"><span class="text-slate-500 block">মোট</span><strong class="tabular-nums">${formatBDT(o.totalAmount)}</strong></div>
+                    <div class="p-2 rounded-lg bg-emerald-50"><span class="text-emerald-700 block">অ্যাডভান্স</span><strong class="text-[#0E9A4D] tabular-nums">${formatBDT(o.advanceAmount)}</strong></div>
+                    <div class="p-2 rounded-lg bg-orange-50"><span class="text-orange-700 block">বাকি COD</span><strong class="text-[#EA580C] tabular-nums">${formatBDT(o.remainingAmount)}</strong></div>
+                  </div>
+                  ${curIdx >= 0 ? `<div class="flex items-center justify-between gap-1 pt-2">${steps.map((st, idx) => `<div class="flex-1 text-center"><div class="h-1.5 rounded-full ${idx <= curIdx ? 'bg-[#0E9A4D]' : 'bg-slate-200'}"></div><span class="block text-[9px] mt-1 truncate ${idx <= curIdx ? 'text-[#0E9A4D] font-bold' : 'text-slate-400'}">${st.split(' ')[0]}</span></div>`).join('')}</div>` : ''}
+                </div>
+              `;
+            }).join('') : `<div class="bg-white rounded-2xl border p-6 text-center text-xs sm:text-sm text-slate-500">কোনো সাধারণ অর্ডার পাওয়া যায়নি। আপনার মোবাইল নম্বর দিয়ে উপরে সার্চ করুন।</div>`}
+          </section>
+
+          <!-- 11 BDT Mystery Box Orders -->
+          <section class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h2 class="font-display font-bold text-base sm:text-lg text-slate-900">🎁 ১১৳ মিস্ট্রি বক্স হিস্ট্রি (${allMystery.length})</h2>
+              <button type="button" onclick="navigate('mystery-box')" class="text-xs font-bold text-[#F97316] hover:underline">+ নতুন বক্স কিনুন →</button>
+            </div>
+            ${allMystery.length ? allMystery.map(m => `
+              <div class="bg-white rounded-2xl border border-amber-200 p-4 sm:p-5 space-y-2">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <strong class="tabular-nums text-[#0E9A4D]">${escapeHtml(m.ticketId || m.id)}</strong>
+                    <span class="text-xs text-slate-500 ml-2">${new Date(m.createdAt || Date.now()).toLocaleString()}</span>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-md bg-amber-100 text-amber-900 text-xs font-bold">${escapeHtml(m.status)}</span>
+                </div>
+                <p class="text-xs text-slate-600">পেমেন্ট: <strong class="tabular-nums">${formatBDT(m.totalPaid || 11)}</strong> (${escapeHtml(m.paymentMethod)} · TrxID: <strong class="tabular-nums">${escapeHtml(m.trxId)}</strong>)</p>
+                ${m.prizeTitle ? `<div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs sm:text-sm font-bold text-emerald-900">${escapeHtml(m.prizeBadge || '🎁')} অভিনন্দন! আপনি জিতেছেন: ${escapeHtml(m.prizeTitle)} (মূল্য: ${formatBDT(m.prizeValue || 0)})</div>` : `<div class="p-2.5 rounded-xl bg-slate-50 text-xs text-slate-600">অ্যাডমিন আপনার TrxID ভেরিফাই করলে এখানে আপনার গিফট রিভিল হবে!</div>`}
+              </div>
+            `).join('') : `<div class="bg-white rounded-2xl border p-6 text-center text-xs sm:text-sm text-slate-500">এখনো কোনো ১১ টাকার মিস্ট্রি বক্স অর্ডার করা হয়নি।</div>`}
+          </section>
+        </div>
+      `;
+    }
+
+    const mbDraft = { name: '', phone: '', division: 'Dhaka', district: 'Dhaka', thana: 'Dhanmondi', address: '', paymentMethod: 'bKash', senderNumber: '', trxId: '' };
+    function renderMysteryBoxPage() {
+      const mb = getMysteryBoxConfig();
+      const remaining = Math.max(0, Number(mb.totalBoxes || 0) - Number(mb.soldCount || 0));
+      const pctLeft = mb.totalBoxes > 0 ? Math.max(4, Math.min(100, Math.round((remaining / mb.totalBoxes) * 100))) : 0;
+      const totalPayable = Number(mb.boxPrice || 11) + Number(mb.deliveryCharge || 0);
+      const depositNumber = getActiveDepositNumber(mbDraft.paymentMethod);
+      const divisions = Object.keys(BD_LOCATIONS), districts = Object.keys(BD_LOCATIONS[mbDraft.division] || BD_LOCATIONS.Dhaka);
+      if (!districts.includes(mbDraft.district)) mbDraft.district = districts[0];
+      const thanas = (BD_LOCATIONS[mbDraft.division] && BD_LOCATIONS[mbDraft.division][mbDraft.district]) || [];
+      if (!thanas.includes(mbDraft.thana)) mbDraft.thana = thanas[0] || '';
+      if (state.currentUser && !mbDraft.name) mbDraft.name = state.currentUser.name || '';
+      if (state.currentUser && !mbDraft.phone) mbDraft.phone = state.currentUser.phone || '';
+
+      return `
+        <div class="space-y-6 animate-in">
+          <section class="rounded-2xl bg-gradient-to-br from-slate-900 via-emerald-900 to-[#0E9A4D] text-white p-6 sm:p-8 shadow-lg">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+              <div class="space-y-2.5 max-w-2xl">
+                <span class="inline-block px-3 py-1 rounded-md bg-amber-400 text-slate-950 text-xs font-extrabold">🎁 Daraz Style 11৳ Mystery Box</span>
+                <h1 class="font-display text-2xl sm:text-3xl font-extrabold">${escapeHtml(mb.titleBn)}</h1>
+                <p class="text-xs sm:text-sm text-emerald-100">${escapeHtml(mb.subtitleBn)}</p>
+                <div class="pt-2 space-y-1.5 max-w-md">
+                  <div class="flex justify-between text-xs font-bold tabular-nums"><span>বাকি আছে: ${remaining} টি</span><span>মোট স্টক: ${mb.totalBoxes}</span></div>
+                  <div class="h-2.5 rounded-full bg-white/20 overflow-hidden"><div class="h-full bg-amber-400 rounded-full" style="width:${pctLeft}%"></div></div>
+                </div>
+              </div>
+              <div class="bg-white/10 border border-white/20 rounded-2xl p-4 sm:p-5 text-center shrink-0 min-w-[210px]">
+                <p class="text-xs text-emerald-200">মিস্ট্রি বক্স মূল্য</p>
+                <p class="text-3xl sm:text-4xl font-extrabold text-amber-300 tabular-nums my-1">${formatBDT(mb.boxPrice || 11)}</p>
+                <p class="text-[11px] text-slate-200">${Number(mb.deliveryCharge || 0) === 0 ? 'ফ্রি ডেলিভারি / ইনবক্স ভাউচার' : `+ ডেলিভারি ${formatBDT(mb.deliveryCharge)}`}</p>
+                <div class="mt-3 pt-2 border-t border-white/15 font-mono text-sm font-bold text-amber-200 tabular-nums" id="mb-countdown-timer" data-end="${Number(mb.endAt || (Date.now() + 86400000 * 3))}">${formatCountdown(mb.endAt || (Date.now() + 86400000 * 3))}</div>
+              </div>
+            </div>
+          </section>
+
+          ${state.lastMysteryOrder ? `
+            <section class="bg-emerald-50 border-2 border-[#0E9A4D] rounded-2xl p-5 sm:p-6 space-y-3">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <h2 class="font-display text-lg font-extrabold text-emerald-950">🎉 আপনার ১১৳ মিস্ট্রি বক্স টিকিট কনফার্ম হয়েছে!</h2>
+                <span class="px-3 py-1 rounded-lg bg-[#0E9A4D] text-white text-xs font-bold tabular-nums">${escapeHtml(state.lastMysteryOrder.ticketId)}</span>
+              </div>
+              <p class="text-xs sm:text-sm text-emerald-900">আপনার TrxID (<strong>${escapeHtml(state.lastMysteryOrder.trxId)}</strong>) যাচাই হওয়া মাত্রই "অর্ডার হিস্ট্রি" ও নিচে আপনার গিফট দেখাবে।</p>
+              <button type="button" onclick="navigate('orders')" class="h-9 px-4 rounded-lg bg-slate-900 text-white text-xs font-bold">অর্ডার হিস্ট্রিতে স্ট্যাটাস দেখুন</button>
+            </section>
+          ` : ''}
+
+          <!-- Prize Pool Showcase -->
+          <section class="bg-white rounded-2xl border border-slate-200 p-5 space-y-4">
+            <h2 class="font-display font-bold text-base sm:text-lg text-slate-900">বক্সের ভেতর যে গিফটগুলো থাকতে পারে (Prize Pool)</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              ${mb.prizes.map(p => `
+                <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 flex flex-col justify-between space-y-2">
+                  <span class="text-xs font-extrabold text-[#F97316]">${escapeHtml(p.badge || '🎁 Gift')}</span>
+                  <p class="text-xs sm:text-sm font-bold text-slate-900 leading-snug">${escapeHtml(p.title)}</p>
+                  <div class="pt-2 border-t text-[11px] text-slate-500 flex justify-between tabular-nums"><span>মূল্য: <strong>${formatBDT(p.valueBDT)}</strong></span><span>স্টক: ${p.stock}</span></div>
+                </div>
+              `).join('')}
+            </div>
+          </section>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <section class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 space-y-4">
+              <h2 class="font-display font-bold text-lg border-b pb-2">১১৳ মিস্ট্রি বক্স অর্ডার ফর্ম</h2>
+              ${mb.enabled === false || remaining <= 0 ? `
+                <div class="p-6 rounded-xl bg-red-50 border border-red-200 text-center text-sm font-semibold text-red-700">দুঃখিত, এই রাউন্ডের মিস্ট্রি বক্স ক্যাম্পেইনটি বর্তমানে বন্ধ অথবা স্টক শেষ হয়েছে!</div>
+              ` : `
+                <form onsubmit="handleMysteryBoxOrderSubmit(event)" class="space-y-4 text-sm">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div><label class="block text-xs font-semibold mb-1">আপনার নাম *</label><input required value="${escapeHtml(mbDraft.name)}" oninput="mbDraft.name=this.value" class="w-full h-10 px-3 rounded-lg border" placeholder="পূর্ণ নাম" /></div>
+                    <div><label class="block text-xs font-semibold mb-1">মোবাইল নম্বর (01XXXXXXXXX) *</label><input type="tel" required value="${escapeHtml(mbDraft.phone)}" oninput="mbDraft.phone=this.value" class="w-full h-10 px-3 rounded-lg border tabular-nums" placeholder="017XXXXXXXX" /></div>
+                    <div><label class="block text-xs font-semibold mb-1">বিভাগ *</label><select onchange="mbDraft.division=this.value; mbDraft.district=Object.keys(BD_LOCATIONS[this.value])[0]; mbDraft.thana=BD_LOCATIONS[this.value][mbDraft.district][0]; renderCurrentRoute();" class="w-full h-10 px-3 rounded-lg border bg-white">${divisions.map(d => `<option value="${escapeHtml(d)}" ${d === mbDraft.division ? 'selected' : ''}>${escapeHtml(d)}</option>`).join('')}</select></div>
+                    <div><label class="block text-xs font-semibold mb-1">জেলা *</label><select onchange="mbDraft.district=this.value; mbDraft.thana=BD_LOCATIONS[mbDraft.division][this.value][0]; renderCurrentRoute();" class="w-full h-10 px-3 rounded-lg border bg-white">${districts.map(d => `<option value="${escapeHtml(d)}" ${d === mbDraft.district ? 'selected' : ''}>${escapeHtml(d)}</option>`).join('')}</select></div>
+                  </div>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div><label class="block text-xs font-semibold mb-1">থানা / উপজেলা *</label><select onchange="mbDraft.thana=this.value" class="w-full h-10 px-3 rounded-lg border bg-white">${thanas.map(th => `<option value="${escapeHtml(th)}" ${th === mbDraft.thana ? 'selected' : ''}>${escapeHtml(th)}</option>`).join('')}</select></div>
+                    <div><label class="block text-xs font-semibold mb-1">ডেলিভারি ঠিকানা *</label><input required value="${escapeHtml(mbDraft.address)}" oninput="mbDraft.address=this.value" class="w-full h-10 px-3 rounded-lg border" placeholder="বাসা, রোড, এলাকা" /></div>
+                  </div>
+                  <div class="grid grid-cols-3 gap-2.5">${['bKash', 'Nagad', 'Rocket'].map(m => `<button type="button" onclick="mbDraft.paymentMethod='${m}'; renderCurrentRoute();" class="h-10 rounded-xl border text-xs sm:text-sm font-bold ${mbDraft.paymentMethod === m ? 'border-[#0E9A4D] bg-[#0E9A4D] text-white' : 'border-slate-200 bg-slate-50'}">${m}</button>`).join('')}</div>
+                  <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 flex flex-wrap items-center justify-between gap-3">
+                    <div><p class="text-xs text-emerald-800">নিচের <strong>${escapeHtml(mbDraft.paymentMethod)}</strong> নম্বরে <strong class="tabular-nums text-base">${formatBDT(totalPayable)}</strong> সেন্ড মানি করুন:</p><p class="font-display font-bold text-lg text-[#0E9A4D] tabular-nums">${escapeHtml(depositNumber)}</p></div>
+                    <button type="button" onclick="copyText('${escapeHtml(depositNumber)}', 'নম্বর কপি হয়েছে!')" class="h-9 px-3 rounded-lg bg-white border border-emerald-300 text-xs font-bold text-emerald-800">কপি করুন</button>
+                  </div>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div><label class="block text-xs font-semibold mb-1">সেন্ডার নম্বর (01XXXXXXXXX) *</label><input type="tel" required value="${escapeHtml(mbDraft.senderNumber)}" oninput="mbDraft.senderNumber=this.value" class="w-full h-10 px-3 rounded-lg border tabular-nums" placeholder="017XXXXXXXX" /></div>
+                    <div><label class="block text-xs font-semibold mb-1">Transaction ID / TrxID *</label><input required value="${escapeHtml(mbDraft.trxId)}" oninput="mbDraft.trxId=this.value" class="w-full h-10 px-3 rounded-lg border uppercase" placeholder="TrxID" /></div>
+                  </div>
+                  <button type="submit" class="w-full h-12 rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white font-extrabold text-sm shadow-md">🎁 ${formatBDT(totalPayable)} পেমেন্ট করে মিস্ট্রি বক্স খুলুন</button>
+                </form>
+              `}
+            </section>
+
+            <section class="lg:col-span-5 space-y-4">
+              <div class="bg-white rounded-2xl border border-slate-200 p-5 space-y-3">
+                <h3 class="font-display font-bold text-base border-b pb-2">সাম্প্রতিক বিজয়ী (Recent Winners)</h3>
+                ${state.recentMysteryWinners.length ? state.recentMysteryWinners.map(w => `
+                  <div class="p-3 rounded-xl bg-slate-50 border text-xs space-y-0.5">
+                    <div class="flex justify-between font-bold"><span>${escapeHtml((w.customerName || 'Customer').slice(0, 14))}</span><span class="text-[#0E9A4D] tabular-nums">${escapeHtml(w.ticketId)}</span></div>
+                    <p class="text-slate-700 font-semibold">${escapeHtml(w.prizeBadge || '🎁')} ${escapeHtml(w.prizeTitle)}</p>
+                  </div>
+                `).join('') : `<p class="text-xs text-slate-500">প্রথম বিজয়ী হওয়ার সুযোগ এখনই নিন!</p>`}
+              </div>
+              <div class="bg-white rounded-2xl border border-slate-200 p-5 space-y-2.5">
+                <h3 class="font-display font-bold text-base border-b pb-2">আমার মিস্ট্রি বক্স টিকিটসমূহ</h3>
+                ${state.myMysteryOrders.length ? state.myMysteryOrders.slice(0, 5).map(m => `
+                  <div class="p-3 rounded-xl border border-amber-200 bg-amber-50/40 text-xs space-y-1">
+                    <div class="flex justify-between font-bold"><span class="tabular-nums text-[#0E9A4D]">${escapeHtml(m.ticketId)}</span><span>${escapeHtml(m.status)}</span></div>
+                    <p class="font-semibold text-slate-800">${m.prizeTitle ? `${escapeHtml(m.prizeBadge || '🎁')} গিফট: ${escapeHtml(m.prizeTitle)}` : '⏳ গিফট যাচাই চলছে...'}</p>
+                  </div>
+                `).join('') : `<p class="text-xs text-slate-500">আপনি এখনো কোনো বক্স কেনেননি।</p>`}
+              </div>
+            </section>
           </div>
         </div>
       `;
@@ -907,14 +1395,14 @@
 
     function renderAccount() {
       if (!state.currentUser) {
-        return `<div class="max-w-md mx-auto bg-white rounded-2xl border p-8 text-center space-y-4"><h1 class="font-display text-xl font-bold">আপনার অ্যাকাউন্টে প্রবেশ করুন</h1><div class="flex gap-3 justify-center"><button onclick="openAuthModal('login')" class="h-10 px-6 rounded-lg bg-[#0E9A4D] text-white text-sm font-semibold">লগইন করুন</button><button onclick="openAuthModal('register')" class="h-10 px-6 rounded-lg border text-sm font-semibold">রেজিস্ট্রেশন</button></div></div>`;
+        return `<div class="max-w-md mx-auto bg-white rounded-2xl border p-8 text-center space-y-4"><h1 class="font-display text-xl font-bold">আপনার অ্যাকাউন্টে প্রবেশ করুন</h1><div class="flex gap-3 justify-center"><button onclick="openAuthModal('login')" class="h-10 px-6 rounded-lg bg-[#0E9A4D] text-white text-sm font-semibold">লগইন করুন</button><button onclick="openAuthModal('register')" class="h-10 px-6 rounded-lg border text-sm font-semibold">রেজিস্ট্রেশন</button></div><button onclick="navigate('orders')" class="text-xs font-bold text-[#0E9A4D] hover:underline">লগইন ছাড়াই অর্ডার হিস্ট্রি দেখুন →</button></div>`;
       }
       const myOrders = state.orders.filter(o => (state.currentUser.uid && o.userId === state.currentUser.uid) || (state.currentUser.phone && o.phone === state.currentUser.phone));
       const wishProducts = state.wishlist.map(id => state.products.find(p => p.id === id)).filter(Boolean);
       return `
         <div class="space-y-6 animate-in">
           <div class="bg-white rounded-2xl border p-5 flex justify-between items-center"><div><h1 class="font-display text-xl font-bold">${escapeHtml(state.currentUser.name || 'Customer')}</h1><p class="text-xs text-slate-500">${escapeHtml(state.currentUser.email)} ${state.currentUser.phone ? '· ' + escapeHtml(state.currentUser.phone) : ''}</p></div><button onclick="logoutCustomer()" class="h-9 px-4 rounded-lg border border-red-200 text-red-600 text-xs font-semibold">লগআউট</button></div>
-          <section class="bg-white rounded-2xl border p-5 space-y-3"><h2 class="font-bold text-base">আমার অর্ডার (${myOrders.length})</h2>${myOrders.length ? myOrders.map(o => `<div class="py-2.5 border-b last:border-0 flex justify-between text-sm"><div><strong class="tabular-nums">${escapeHtml(o.orderId)}</strong> · ${formatBDT(o.totalAmount)}</div><span class="text-xs font-bold text-[#0E9A4D]">${escapeHtml(o.status)}</span></div>`).join('') : `<p class="text-xs text-slate-500">কোনো অর্ডার নেই।</p>`}</section>
+          <section class="bg-white rounded-2xl border p-5 space-y-3"><div class="flex justify-between items-center"><h2 class="font-bold text-base">আমার অর্ডার (${myOrders.length})</h2><button onclick="navigate('orders')" class="text-xs font-bold text-[#0E9A4D] hover:underline">সম্পূর্ণ হিস্ট্রি ও মিস্ট্রি বক্স →</button></div>${myOrders.length ? myOrders.map(o => `<div class="py-2.5 border-b last:border-0 flex justify-between text-sm"><div><strong class="tabular-nums">${escapeHtml(o.orderId)}</strong> · ${formatBDT(o.totalAmount)}</div><span class="text-xs font-bold text-[#0E9A4D]">${escapeHtml(o.status)}</span></div>`).join('') : `<p class="text-xs text-slate-500">কোনো অর্ডার নেই।</p>`}</section>
           <section><h2 class="font-bold text-base mb-3">উইশলিস্ট (${wishProducts.length})</h2><div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">${wishProducts.map(renderProductCard).join('')}</div></section>
         </div>
       `;
@@ -935,6 +1423,8 @@
       else if (state.route === 'product') root.innerHTML = renderProductDetails();
       else if (state.route === 'checkout') root.innerHTML = renderCheckout();
       else if (state.route === 'order-success') root.innerHTML = renderOrderSuccess();
+      else if (state.route === 'orders') root.innerHTML = renderOrderHistory();
+      else if (state.route === 'mystery-box') root.innerHTML = renderMysteryBoxPage();
       else if (state.route === 'track') root.innerHTML = renderTrackOrder();
       else if (state.route === 'account') root.innerHTML = renderAccount();
       else if (state.route === 'compare') root.innerHTML = renderCompareView();
@@ -948,18 +1438,21 @@
       if (updateHash) {
         let hash = '#/';
         if (route === 'product' && params.id) hash = `#/product/${params.id}`;
-        else if (['checkout', 'track', 'account', 'compare'].includes(route)) hash = `#/${route}`;
+        else if (['checkout', 'track', 'account', 'compare', 'orders', 'mystery-box'].includes(route)) hash = `#/${route}`;
         else if (route === 'category') hash = `#/category/${encodeURIComponent(state.activeCategory || 'all')}`;
         if (window.location.hash !== hash) window.location.hash = hash;
       }
+      if (route === 'orders') DataService.syncMyOrdersHistory().then(() => { if (state.route === 'orders') renderCurrentRoute(); }).catch(() => {});
       window.scrollTo({ top: 0, behavior: 'smooth' });
       renderCurrentRoute();
     }
 
     function syncRouteFromHash() {
       const hash = window.location.hash || '#/';
-      if (hash.startsWith('#/product/')) { state.selectedGalleryImg = 0; state.pdpQty = 1; navigate('product', { id: hash.replace('#/product/', '') }, false); }
+      if (hash.startsWith('#/product/')) { const id = hash.replace('#/product/', ''); state.selectedGalleryImg = 0; state.pdpQty = 1; recordRecentView(id); navigate('product', { id }, false); }
       else if (hash.startsWith('#/checkout')) navigate('checkout', {}, false);
+      else if (hash.startsWith('#/orders')) navigate('orders', {}, false);
+      else if (hash.startsWith('#/mystery-box')) navigate('mystery-box', {}, false);
       else if (hash.startsWith('#/track')) navigate('track', {}, false);
       else if (hash.startsWith('#/account')) navigate('account', {}, false);
       else if (hash.startsWith('#/compare')) navigate('compare', {}, false);
@@ -969,7 +1462,7 @@
 
     function toggleLanguage() { state.lang = state.lang === 'bn' ? 'en' : 'bn'; localStorage.setItem(STORAGE_KEYS.LANG, state.lang); renderHeaderAndBars(); renderCurrentRoute(); }
     function selectCategory(slug) { state.activeCategory = slug || 'all'; state.searchQuery = ''; navigate('category', { slug: state.activeCategory }); }
-    function openProduct(id) { state.selectedGalleryImg = 0; state.pdpQty = 1; navigate('product', { id }); }
+    function openProduct(id) { state.selectedGalleryImg = 0; state.pdpQty = 1; recordRecentView(id); navigate('product', { id }); }
     function changePdpQty(delta) { state.pdpQty = Math.max(1, state.pdpQty + delta); renderCurrentRoute(); }
     function handleLiveSearch(val) {
       state.searchQuery = val;
@@ -1020,16 +1513,92 @@
           division: checkoutDraft.division, district: checkoutDraft.district, thana: checkoutDraft.thana, address: checkoutDraft.address.trim(),
           deliveryMethod: checkoutDraft.deliveryMethod, deliveryCharge: totals.deliveryCharge, notes: checkoutDraft.notes.trim(),
           items: items.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, sku: i.sku || '' })),
-          subtotal: totals.subtotal, totalAmount: totals.total, advancePercent: totals.advPct, advanceAmount: totals.advance, remainingAmount: totals.remaining,
+          subtotal: totals.subtotal, couponCode: state.appliedCoupon ? state.appliedCoupon.code : '', discountAmount: totals.discount || 0,
+          totalAmount: totals.total, advancePercent: totals.advPct, advanceAmount: totals.advance, remainingAmount: totals.remaining,
           paymentMethod: checkoutDraft.paymentMethod, trxId: checkoutDraft.trxId.trim().toUpperCase(), senderNumber: checkoutDraft.senderNumber.trim(), screenshotUrl,
           status: 'Pending Payment Verification', createdAt: Date.now()
         };
         await DataService.createOrder(orderData);
+        saveLocalOrderId(orderId, orderData.phone, false);
+        state.localOrders = [orderData, ...state.localOrders.filter(x => x.orderId !== orderId)];
         if (!state.checkoutDirectItems) { state.cart = []; saveCart(); }
-        state.checkoutDirectItems = null; state.lastOrder = orderData; checkoutDraft.trxId = ''; checkoutDraft.screenshotFile = null; checkoutDraft.screenshotPreview = '';
+        state.checkoutDirectItems = null; state.appliedCoupon = null; state.lastOrder = orderData; checkoutDraft.trxId = ''; checkoutDraft.screenshotFile = null; checkoutDraft.screenshotPreview = '';
         showToast('অর্ডার সফলভাবে কনফার্ম হয়েছে!');
         navigate('order-success');
       } catch (err) { showToast('অর্ডার জমা দিতে সমস্যা হয়েছে।', 'error'); } finally { setLoading(false); }
+    }
+
+    async function handleMysteryBoxOrderSubmit(e) {
+      e.preventDefault();
+      if (!mbDraft.name.trim()) return showToast(t('errNameRequired'), 'error');
+      if (!validateBDPhone(mbDraft.phone)) return showToast(t('errPhoneInvalid'), 'error');
+      if (!mbDraft.address.trim()) return showToast(t('errAddressRequired'), 'error');
+      if (!validateBDPhone(mbDraft.senderNumber)) return showToast('সঠিক পেমেন্ট সেন্ডার নম্বর দিন (01XXXXXXXXX)।', 'error');
+      if (!mbDraft.trxId.trim() || mbDraft.trxId.trim().length < 4) return showToast('সঠিক Transaction ID / TrxID লিখুন।', 'error');
+      const mb = getMysteryBoxConfig(), boxPrice = Number(mb.boxPrice || 11), deliveryCharge = Number(mb.deliveryCharge || 0), totalPaid = boxPrice + deliveryCharge;
+      setLoading(true, '১১৳ মিস্ট্রি বক্স টিকিট তৈরি হচ্ছে...');
+      try {
+        const ticketId = 'MBX-' + Math.floor(100000 + Math.random() * 900000);
+        const ticketData = {
+          id: ticketId, ticketId, userId: state.currentUser ? state.currentUser.uid : null,
+          customerName: mbDraft.name.trim(), phone: mbDraft.phone.trim(),
+          division: mbDraft.division, district: mbDraft.district, thana: mbDraft.thana, address: mbDraft.address.trim(),
+          paymentMethod: mbDraft.paymentMethod, senderNumber: mbDraft.senderNumber.trim(), trxId: mbDraft.trxId.trim().toUpperCase(),
+          amountPaid: boxPrice, deliveryCharge, totalPaid, status: 'Pending Verification',
+          prizeId: '', prizeTitle: '', prizeValue: 0, prizeBadge: '', createdAt: Date.now()
+        };
+        await DataService.createMysteryBoxOrder(ticketData);
+        saveLocalOrderId(ticketId, ticketData.phone, true);
+        state.lastMysteryOrder = ticketData;
+        state.myMysteryOrders = [ticketData, ...state.myMysteryOrders.filter(x => x.ticketId !== ticketId)];
+        mbDraft.trxId = '';
+        showToast(`মিস্ট্রি বক্স টিকিট ${ticketId} সফলভাবে জমা হয়েছে!`);
+        renderCurrentRoute();
+      } catch (err) { showToast('টিকিট তৈরি করতে সমস্যা হয়েছে।', 'error'); } finally { setLoading(false); }
+    }
+
+    async function handleOrderHistoryPhoneLookup(e) {
+      e.preventDefault();
+      const phone = (document.getElementById('hist-phone-input')?.value || '').trim();
+      if (!validateBDPhone(phone)) return showToast(t('errPhoneInvalid'), 'error');
+      state.historyLookupPhone = phone;
+      const meta = readLocalOrderMeta(); meta.lastPhone = phone; localStorage.setItem(STORAGE_KEYS.MY_ORDERS, JSON.stringify(meta));
+      setLoading(true, 'অর্ডার হিস্ট্রি খোঁজা হচ্ছে...');
+      try { await DataService.syncMyOrdersHistory(phone); renderCurrentRoute(); }
+      finally { setLoading(false); }
+    }
+
+    async function handleReviewSubmit(e, productId) {
+      e.preventDefault();
+      const name = document.getElementById('rev-name').value.trim(), rating = Number(document.getElementById('rev-rating').value) || 5, comment = document.getElementById('rev-comment').value.trim();
+      if (!name || !comment) return;
+      await DataService.submitReview({ id: 'rev-' + Date.now(), productId, reviewerName: name, rating, comment, isVerifiedBuyer: true, createdAt: Date.now() });
+      showToast('আপনার রিভিউ যুক্ত হয়েছে!');
+      renderCurrentRoute();
+    }
+
+    function openInvoiceModal(orderId) {
+      const o = state.localOrders.find(x => x.orderId === orderId) || state.orders.find(x => x.orderId === orderId);
+      if (!o) return;
+      const body = document.getElementById('invoice-modal-body');
+      if (body) {
+        body.innerHTML = `
+          <div class="flex justify-between items-start border-b pb-3">
+            <div><h4 class="font-display font-bold text-lg text-[#0E9A4D]">Laptop Bazar BD</h4><p class="text-xs text-slate-500">Order Receipt / Invoice</p></div>
+            <div class="text-right text-xs"><strong class="block tabular-nums">${escapeHtml(o.orderId)}</strong><span>${new Date(o.createdAt || Date.now()).toLocaleDateString()}</span></div>
+          </div>
+          <div class="text-xs space-y-0.5"><p><strong>কাস্টমার:</strong> ${escapeHtml(o.customerName)} (${escapeHtml(o.phone)})</p><p><strong>ঠিকানা:</strong> ${escapeHtml(o.address)}, ${escapeHtml(o.thana)}, ${escapeHtml(o.district)}</p><p><strong>পেমেন্ট:</strong> ${escapeHtml(o.paymentMethod)} · TrxID: ${escapeHtml(o.trxId)}</p></div>
+          <div class="border-t border-b py-2 space-y-1 text-xs">${(o.items || []).map(i => `<div class="flex justify-between"><span>${escapeHtml(i.name)} × ${i.qty}</span><strong class="tabular-nums">${formatBDT(i.price * i.qty)}</strong></div>`).join('')}</div>
+          <div class="text-xs space-y-1">
+            ${o.discountAmount ? `<div class="flex justify-between text-[#0E9A4D]"><span>কুপন ছাড় (${escapeHtml(o.couponCode)})</span><span>-${formatBDT(o.discountAmount)}</span></div>` : ''}
+            <div class="flex justify-between"><span>ডেলিভারি চার্জ</span><span>${formatBDT(o.deliveryCharge || 0)}</span></div>
+            <div class="flex justify-between font-bold text-sm pt-1 border-t"><span>মোট মূল্য</span><span class="tabular-nums">${formatBDT(o.totalAmount)}</span></div>
+            <div class="flex justify-between text-[#0E9A4D] font-bold"><span>অ্যাডভান্স (${o.advancePercent || 13}%)</span><span class="tabular-nums">${formatBDT(o.advanceAmount)}</span></div>
+            <div class="flex justify-between text-[#EA580C] font-bold"><span>বাকি COD</span><span class="tabular-nums">${formatBDT(o.remainingAmount)}</span></div>
+          </div>
+        `;
+      }
+      document.getElementById('invoice-modal')?.classList.remove('hidden');
     }
 
     async function handleTrackSubmit(e) {
@@ -1100,18 +1669,28 @@
       const box = document.getElementById('assistant-messages'); box.innerHTML += `<div class="ml-8 bg-[#0E9A4D] text-white rounded-xl p-2.5 text-xs">${escapeHtml(text)}</div>`;
       const q = text.toLowerCase();
       let reply = 'ধন্যবাদ! আমাদের শপে নতুন ও ব্যবহৃত সকল ব্র্যান্ডের ল্যাপটপ রয়েছে। যেকোনো পণ্যে ক্লিক করে অর্ডার করতে পারেন।';
-      if (q.includes('১৩%') || q.includes('13%') || q.includes('অ্যাডভান্স')) reply = `অর্ডার কনফার্ম করতে মোট মূল্যের মাত্র ${state.settings.advancePercent || 13}% অ্যাডভান্স দিতে হবে এবং বাকি টাকা Cash on Delivery দেবেন।`;
+      if (q.includes('মিস্ট্রি') || q.includes('১১') || q.includes('11') || q.includes('বক্স')) reply = `মাত্র ৳${getMysteryBoxConfig().boxPrice || 11} পেমেন্ট করে দারাজ স্টাইল "১১ টাকার মিস্ট্রি বক্স" খুলতে পারেন! উপরের 🎁 ১১৳ বক্স মেনুতে ক্লিক করুন।`;
+      else if (q.includes('হিস্ট্রি') || q.includes('অর্ডার') || q.includes('ট্র্যাক')) reply = 'উপরের "অর্ডার হিস্ট্রি" মেনুতে গিয়ে আপনার সব অর্ডার, ইনভয়েস ও মিস্ট্রি বক্স টিকিট দেখতে পারবেন।';
+      else if (q.includes('১৩%') || q.includes('13%') || q.includes('অ্যাডভান্স')) reply = `অর্ডার কনফার্ম করতে মোট মূল্যের মাত্র ${state.settings.advancePercent || 13}% অ্যাডভান্স দিতে হবে এবং বাকি টাকা Cash on Delivery দেবেন।`;
       else if (q.includes('৫০') || q.includes('50') || q.includes('বাজেট')) reply = '৪০-৫৫ হাজার টাকার মধ্যে HP EliteBook 840 G8 (৳41,900) এবং ThinkPad X1 Carbon (৳54,500) সেরা পছন্দ!';
       else if (q.includes('ডেলিভারি')) reply = `ঢাকার ভেতরে ৳${state.settings.insideDhakaCharge ?? 80} এবং ঢাকার বাইরে ৳${state.settings.outsideDhakaCharge ?? 150}।`;
       setTimeout(() => { box.innerHTML += `<div class="mr-6 bg-white border rounded-xl p-2.5 text-xs">${escapeHtml(reply)}</div>`; box.scrollTop = box.scrollHeight; }, 300);
     }
 
+    function startCountdownTicker() {
+      setInterval(() => {
+        ['flash-sale-timer', 'mb-countdown-timer'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = formatCountdown(el.getAttribute('data-end'));
+        });
+      }, 1000);
+    }
     let deferredInstallPrompt = null;
     window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredInstallPrompt = e; document.getElementById('pwa-install-btn')?.classList.remove('hidden'); document.getElementById('pwa-install-btn')?.classList.add('inline-flex'); });
     async function triggerPWAInstall() { if (!deferredInstallPrompt) return; await deferredInstallPrompt.prompt(); deferredInstallPrompt = null; document.getElementById('pwa-install-btn')?.classList.add('hidden'); }
     document.addEventListener('click', (ev) => { const b = document.getElementById('search-suggestions'), i = document.getElementById('desktop-search-input'); if (b && i && !b.contains(ev.target) && ev.target !== i) b.classList.add('hidden'); });
     window.addEventListener('hashchange', syncRouteFromHash);
-    (async function initApp() { await DataService.init(); syncRouteFromHash(); startHeroAutoSlide(); })();
+    (async function initApp() { await DataService.init(); syncRouteFromHash(); startHeroAutoSlide(); startCountdownTicker(); })();
   </script>
 </body>
 </html>
