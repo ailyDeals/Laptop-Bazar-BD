@@ -1,293 +1,1117 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>E-Shop Pro - User App</title>
-    <meta name="monetag" content="08dfa70688603c36aca8faa4cc5a672e">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        :root { --p: #FF4757; --s: #2F3542; --bg: #F1F2F6; --white: #fff; --gray: #747D8C; --radius: 16px; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); color: var(--s); height: 100vh; overflow: hidden; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Laptop Bazar BD </title>
+  <meta name="description" content="Laptop Bazar BD - নতুন ও ব্যবহৃত ল্যাপটপ, কম্পিউটার, মোবাইল, এক্সেসরিজ কিনুন সেরা দামে। ১৩% অ্যাডভান্স পেমেন্ট ও ক্যাশ অন ডেলিভারি সুবিধা।" />
+  <meta property="og:title" content="Laptop Bazar BD | বিশ্বস্ত ল্যাপটপ ও টেক শপ" />
+  <meta property="og:description" content="নতুন ও ব্যবহৃত ল্যাপটপ এবং ইলেকট্রনিক্স পণ্যের সেরা দাম তুলনা করুন। মাত্র ১৩% অ্যাডভান্সে সারাদেশে হোম ডেলিভারি।" />
+  <meta name="theme-color" content="#0E9A4D" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230E9A4D'/%3E%3Cpath d='M16 20h32v20H16z' fill='none' stroke='%23fff' stroke-width='3.5' stroke-linejoin='round'/%3E%3Cpath d='M10 44h44l-3 4H13l-3-4z' fill='%23F97316'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
 
-        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); display: none; overflow-y: auto; padding: 20px 20px 100px 20px; }
-        .screen.active { display: block; }
-        .card { background: var(--white); padding: 20px; border-radius: var(--radius); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; }
-        
-        .btn { background: var(--p); color: white; border: none; padding: 14px; border-radius: 12px; width: 100%; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .btn:active { transform: scale(0.98); }
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { DEFAULT: '#0E9A4D', dark: '#0A7A3C', light: '#E8F7EE', accent: '#F97316', accentDark: '#EA580C' }
+          },
+          fontFamily: {
+            sans: ['"Hind Siliguri"', '"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            display: ['"Plus Jakarta Sans"', '"Hind Siliguri"', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
 
-        .input-group { margin-bottom: 15px; }
-        input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; background: #f9f9f9; outline: none; }
+  <!-- Firebase v10 Compat SDKs (Firestore, Auth, Storage) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 
-        /* পেমেন্ট নম্বর ও কপি সেকশন */
-        .pay-number-box { background: #f1f2f6; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border: 1px solid #ddd; display: none; }
-        .copy-btn { background: var(--s); color: white; border: none; padding: 5px 12px; border-radius: 5px; font-size: 12px; cursor: pointer; }
+  <style>
+    html, body {
+      scroll-behavior: smooth;
+      font-family: 'Hind Siliguri', 'Plus Jakarta Sans', system-ui, sans-serif;
+      max-width: 100%;
+      overflow-x: clip;
+      overscroll-behavior-x: none;
+      touch-action: pan-y;
+      -webkit-text-size-adjust: 100%;
+    }
+    body { background-color: #F8FAFC; color: #0F172A; -webkit-tap-highlight-color: transparent; width: 100%; }
+    main, section, header, footer { max-width: 100vw; }
+    .overflow-x-auto { touch-action: pan-x pan-y; -webkit-overflow-scrolling: touch; }
+    .tabular-nums { font-variant-numeric: tabular-nums; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .product-card { transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 180ms cubic-bezier(0.16, 1, 0.3, 1); }
+    .product-card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -8px rgba(15, 23, 42, 0.12); }
+    @media (max-width: 767px) {
+      body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
+      input, select, textarea { font-size: 16px !important; }
+    }
+    @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-in { animation: fadeSlideUp 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  </style>
+<script src="/_aistudio-iframe.js?v=29045eb3"></script></head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased">
 
-        /* প্রোডাক্ট গ্রিড */
-        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .product-card { background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-        .product-card img { width: 100%; height: 120px; object-fit: cover; }
-        .product-info { padding: 10px; }
+  <div id="toast-container" class="fixed top-3 left-3 right-3 sm:left-auto sm:right-4 z-[90] flex flex-col gap-2 sm:max-w-sm pointer-events-none"></div>
 
-        /* সিলেকশন গ্রিড */
-        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .select-item { background: white; padding: 12px; border-radius: 12px; text-align: center; border: 2px solid transparent; cursor: pointer; font-size: 13px; }
-        .select-item.active { border-color: var(--p); background: #fff5f6; font-weight: bold; }
-        .select-item img { height: 25px; margin-bottom: 5px; display: block; margin: 0 auto 5px; }
+  <div id="global-loader" class="hidden fixed inset-0 z-[95] bg-slate-900/40 backdrop-blur-[2px] items-center justify-center">
+    <div class="bg-white rounded-2xl p-5 shadow-xl flex items-center gap-3.5 border border-slate-200">
+      <div class="w-6 h-6 border-[3px] border-[#0E9A4D] border-t-transparent rounded-full animate-spin"></div>
+      <span id="loader-text" class="text-sm font-semibold text-slate-800">লোড হচ্ছে...</span>
+    </div>
+  </div>
 
-        /* ব্যানার */
-        .animated-banner { background: linear-gradient(135deg, #FF6F61, #DE425B, #6D1E6F); background-size: 300% 300%; animation: gradient 10s ease infinite; padding: 25px; border-radius: 20px; margin-bottom: 20px; color: white; text-align: center; }
-        @keyframes gradient { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+  <!-- Top Brand Header (BDStall-inspired Green #0E9A4D) -->
+  <header id="app-header" class="sticky top-0 z-40 bg-[#0E9A4D] text-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6">
+      <div class="h-14 sm:h-16 flex items-center justify-between gap-1.5 sm:gap-4 min-w-0">
+        <a href="#/" onclick="navigate('home'); return false;" class="flex items-center gap-1.5 sm:gap-2 min-w-0 shrink group focus:outline-none">
+          <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-lg bg-white/15 border border-white/25 flex items-center justify-center shrink-0">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M2 20h20"></path>
+            </svg>
+          </div>
+          <span class="font-display font-bold text-[15px] sm:text-xl tracking-tight truncate">Laptop Bazar BD</span>
+        </a>
 
-        /* ন্যাভ */
-        .nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid #eee; z-index: 1000; }
-        .nav-item { text-align: center; color: var(--gray); font-size: 10px; flex: 1; cursor: pointer; }
-        .nav-item.active { color: var(--p); }
-        .nav-item i { font-size: 20px; display: block; }
-
-        /* সাপোর্ট এরো */
-        .support-btn { position: fixed; bottom: 85px; right: 20px; background: var(--s); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 100; cursor: pointer; text-decoration: none; }
-
-        .badge { padding: 4px 8px; border-radius: 10px; font-size: 10px; color: white; float: right; }
-        .Pending { background: #ffa502; }
-        .Completed { background: #2ed573; }
-    </style>
-</head>
-<body>
-
-    <div id="loginScreen" class="screen active">
-        <div class="card" style="margin-top: 60px;">
-            <h2 style="text-align: center; margin-bottom: 20px;">স্বাগতম</h2>
-            <div class="input-group"><input type="email" id="lEmail" placeholder="ইমেইল"></div>
-            <div class="input-group"><input type="password" id="lPass" placeholder="পাসওয়ার্ড"></div>
-            <button class="btn" onclick="login()">লগইন করুন</button>
-            <p style="text-align:center; margin-top:15px; font-size:13px;" onclick="toggleScreen('regScreen')">নতুন অ্যাকাউন্ট তৈরি করুন</p>
+        <div class="hidden md:flex flex-1 max-w-xl relative">
+          <div class="relative w-full">
+            <input id="desktop-search-input" type="search" autocomplete="off" oninput="handleLiveSearch(this.value)" onkeydown="if(event.key==='Enter'){submitSearch(this.value)}" placeholder="ল্যাপটপ, ব্র্যান্ড বা মডেল খুঁজুন (যেমন: ThinkPad, MacBook)..." class="w-full h-10 pl-4 pr-11 rounded-lg bg-white text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316]" />
+            <button type="button" onclick="submitSearch(document.getElementById('desktop-search-input').value)" aria-label="Search" class="absolute right-1 top-1 h-8 w-9 rounded-md bg-[#F97316] hover:bg-[#EA580C] text-white flex items-center justify-center transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+            </button>
+          </div>
+          <div id="search-suggestions" class="hidden absolute left-0 right-0 top-11 bg-white text-slate-900 rounded-xl shadow-xl border border-slate-200 overflow-hidden z-50 max-h-80 overflow-y-auto"></div>
         </div>
+
+        <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+          <button id="pwa-install-btn" type="button" onclick="triggerPWAInstall()" class="hidden items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white/15 hover:bg-white/25 text-xs font-semibold whitespace-nowrap">Install</button>
+          <button type="button" onclick="toggleLanguage()" id="lang-toggle-btn" class="h-8 sm:h-9 px-2 sm:px-2.5 rounded-lg bg-white/15 hover:bg-white/25 text-[11px] sm:text-xs font-bold tracking-wide whitespace-nowrap">BN / EN</button>
+          <button type="button" onclick="navigate('track')" class="hidden lg:inline-flex items-center gap-1.5 h-9 px-2.5 rounded-lg hover:bg-white/15 text-xs sm:text-sm font-medium whitespace-nowrap" data-i18n="trackOrder">অর্ডার ট্র্যাক</button>
+          <button type="button" onclick="openSellModal()" class="h-8 sm:h-9 px-2 sm:px-3 rounded-lg bg-[#F97316] hover:bg-[#EA580C] text-white text-[11px] sm:text-sm font-semibold whitespace-nowrap shadow-sm"><span class="sm:hidden">বিক্রি</span><span class="hidden sm:inline" data-i18n="sellItem">পণ্য বিক্রি করুন</span></button>
+          <button type="button" id="header-account-btn" onclick="navigate('account')" class="hidden sm:inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-white text-[#0E9A4D] hover:bg-slate-100 text-xs sm:text-sm font-bold whitespace-nowrap">লগইন</button>
+          <button type="button" onclick="toggleCartDrawer(true)" aria-label="Cart" class="relative h-8 sm:h-9 px-2 sm:px-2.5 rounded-lg bg-white/15 hover:bg-white/25 flex items-center gap-1 sm:gap-1.5">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            <span id="header-cart-count" class="tabular-nums text-[11px] sm:text-xs font-bold bg-[#F97316] text-white rounded-md px-1.5 py-0.5 leading-none">0</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="md:hidden pb-2.5">
+        <div class="relative">
+          <input id="mobile-search-input" type="search" autocomplete="off" oninput="handleLiveSearch(this.value)" onkeydown="if(event.key==='Enter'){submitSearch(this.value)}" placeholder="ল্যাপটপ, ব্র্যান্ড বা SKU খুঁজুন..." class="w-full h-9 pl-3.5 pr-10 rounded-lg bg-white text-slate-900 placeholder-slate-400 text-sm focus:outline-none" />
+          <button type="button" onclick="submitSearch(document.getElementById('mobile-search-input').value)" aria-label="Search Mobile" class="absolute right-1 top-1 h-7 w-8 rounded bg-[#F97316] text-white flex items-center justify-center">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div id="regScreen" class="screen">
-        <div class="card" style="margin-top: 60px;">
-            <h2 style="text-align: center; margin-bottom: 20px;">নিবন্ধন</h2>
-            <div class="input-group"><input type="text" id="rName" placeholder="নাম"></div>
-            <div class="input-group"><input type="email" id="rEmail" placeholder="ইমেইল"></div>
-            <div class="input-group"><input type="password" id="rPass" placeholder="পাসওয়ার্ড"></div>
-            <button class="btn" onclick="register()">রেজিস্ট্রেশন করুন</button>
-            <p style="text-align:center; margin-top:15px; font-size:13px;" onclick="toggleScreen('loginScreen')">আগের অ্যাকাউন্ট আছে? লগইন</p>
-        </div>
-    </div>
-
-    <div id="homeScreen" class="screen">
-        <div class="animated-banner">
-            <h3>হ্যালো, <span id="uName">ইউজার</span>!</h3>
-            <p>আপনার পছন্দের পণ্যটি অর্ডার করুন</p>
-        </div>
-        <div class="product-grid" id="productContainer"></div>
-    </div>
-
-    <div id="detailsScreen" class="screen">
-        <i class="fa-solid fa-arrow-left" onclick="toggleScreen('homeScreen')" style="font-size: 20px; margin-bottom: 15px;"></i>
-        <img id="dImg" src="" style="width:100%; border-radius:15px; margin-bottom: 15px; height: 200px; object-fit: cover;">
-        <h2 id="dTitle">পণ্য</h2>
-        <h3 id="dPrice" style="color:var(--p); margin-bottom: 10px;">৳ ০</h3>
-        
-        <div class="card" style="background:#fff5f6; border: 1px dashed var(--p); padding: 12px; margin-bottom: 15px;">
-            <p style="font-size: 14px;">অর্ডার কনফার্ম করতে অগ্রিম <b>১২%</b> অর্থাৎ <b>৳ <span id="advAmt" style="color:var(--p); font-size: 18px;">0</span></b> পেমেন্ট করুন।</p>
-        </div>
-
-        <p style="font-weight: 600; margin-bottom: 10px;">ভ্যারিয়েন্ট বেছে নিন:</p>
-        <div class="selection-grid" id="vContainer"></div>
-        
-        <p style="font-weight: 600; margin-bottom: 10px;">অগ্রিম পেমেন্ট মেথড:</p>
-        <div class="selection-grid" id="payMethods"></div>
-
-        <div class="pay-number-box" id="payNumberBox">
-            <span id="targetNumber" style="font-weight: bold; color: var(--s);">017XXXXXXXX</span>
-            <button class="copy-btn" onclick="copyNumber()">Copy Number</button>
-        </div>
-
-        <div class="input-group"><input type="text" id="dTrx" placeholder="ট্রানজেকশন আইডি (TrxID) দিন"></div>
-        <div class="input-group"><textarea id="dAddr" rows="2" placeholder="আপনার ঠিকানা ও মোবাইল নম্বর"></textarea></div>
-
-        <button class="btn" onclick="placeOrder()">অর্ডার কনফার্ম করুন</button>
-    </div>
-
-    <div id="walletScreen" class="screen">
-        <div style="background:linear-gradient(135deg, var(--p), #ff6b81); padding:30px; border-radius:20px; color:white; text-align:center;">
-            <p>বর্তমান ব্যালেন্স</p>
-            <h1 id="wBal">৳ ০.০০</h1>
-        </div>
-        <h4 style="margin: 20px 0 10px;">টাকা অ্যাড করুন</h4>
-        <div class="input-group"><input type="number" id="addAmt" placeholder="টাকার পরিমাণ"></div>
-        <div class="selection-grid" id="addPayMethods"></div>
-        
-        <div class="pay-number-box" id="addPayNumberBox">
-            <span id="addTargetNumber" style="font-weight: bold; color: var(--s);">017XXXXXXXX</span>
-            <button class="copy-btn" onclick="copyNumberAdd()">Copy Number</button>
-        </div>
-
-        <div class="input-group"><input type="text" id="addTrx" placeholder="TrxID দিন"></div>
-        <button class="btn" onclick="addMoneyReq()">রিকোয়েস্ট পাঠান</button>
-    </div>
-
-    <div id="orderScreen" class="screen">
-        <h3>আমার অর্ডারসমূহ</h3>
-        <div id="orderList" style="margin-top: 15px;"></div>
-    </div>
-
-    <div id="profileScreen" class="screen">
-        <div class="card" style="text-align: center; padding: 40px 20px;">
-            <i class="fa-solid fa-circle-user" style="font-size: 80px; color: var(--p);"></i>
-            <h2 id="pName" style="margin-top: 15px;">ইউজার নাম</h2>
-            <p id="pEmail" style="color: var(--gray); font-size: 14px;"></p>
-            <button class="btn" style="margin-top: 30px; background: var(--s);" onclick="logout()">লগ আউট</button>
-        </div>
-    </div>
-
-    <nav class="nav" id="navbar" style="display:none;">
-        <div class="nav-item active" onclick="toggleScreen('homeScreen', this)"><i class="fa-solid fa-house"></i>হোম</div>
-        <div class="nav-item" onclick="toggleScreen('orderScreen', this)"><i class="fa-solid fa-bag-shopping"></i>অর্ডার</div>
-        <div class="nav-item" onclick="toggleScreen('walletScreen', this)"><i class="fa-solid fa-wallet"></i>ওয়ালেট</div>
-        <div class="nav-item" onclick="toggleScreen('profileScreen', this)"><i class="fa-solid fa-user"></i>প্রোফাইল</div>
+    <nav id="category-bar" class="bg-white text-slate-700 border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-3 sm:px-6 flex items-center justify-between gap-3">
+        <div id="category-tabs" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-2"></div>
+      </div>
     </nav>
+  </header>
 
-  <a href="https://wa.me/8801340645169?text=Hello, I need some help with my order!" 
-   class="whatsapp-btn" target="_blank">
-   <i class="fa-brands fa-whatsapp"></i>
-   <span>Support</span>
-</a>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <main id="main-content" class="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6 overflow-x-hidden"></main>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyA813ETR3hxfcUqyILdr1wSVgyXI1MvvNg",
-            authDomain: "gamestore-3addc.firebaseapp.com",
-            projectId: "gamestore-3addc",
-            storageBucket: "gamestore-3addc.appspot.com",
-            messagingSenderId: "243275206854",
-            appId: "1:243275206854:web:2feb8968aad9e27eb547c7"
+  <div id="compare-tray" class="hidden fixed bottom-16 md:bottom-4 left-1/2 -translate-x-1/2 z-40 bg-slate-900 text-white px-4 py-2.5 rounded-xl shadow-xl border border-slate-700 flex items-center gap-3 max-w-[95vw]">
+    <span class="text-xs sm:text-sm font-medium whitespace-nowrap"><span id="compare-count" class="tabular-nums font-bold text-[#F97316]">0</span> টি পণ্য তুলনার জন্য নির্বাচিত</span>
+    <button type="button" onclick="navigate('compare')" class="px-3 py-1.5 rounded-lg bg-[#0E9A4D] hover:bg-[#0A7A3C] text-white text-xs font-semibold whitespace-nowrap" data-i18n="compareNow">তুলনা করুন</button>
+    <button type="button" onclick="clearCompare()" class="text-xs text-slate-400 hover:text-white px-1.5 py-1">✕</button>
+  </div>
+
+  <div id="cart-drawer" class="hidden fixed inset-0 z-50">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-[1px]" onclick="toggleCartDrawer(false)"></div>
+    <aside class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col animate-in">
+      <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+        <h2 class="font-display font-bold text-lg text-slate-900" data-i18n="shoppingCart">আপনার শপিং কার্ট</h2>
+        <button type="button" onclick="toggleCartDrawer(false)" class="w-9 h-9 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-500">✕</button>
+      </div>
+      <div id="cart-drawer-items" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+      <div id="cart-drawer-footer" class="p-4 border-t border-slate-200 bg-slate-50 space-y-3"></div>
+    </aside>
+  </div>
+
+  <!-- Auth Modal (Email + Password + Phone) -->
+  <div id="auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-[1px]">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in">
+      <div class="px-5 py-4 bg-[#0E9A4D] text-white flex items-center justify-between">
+        <h3 class="font-display font-bold text-lg">লগইন / অ্যাকাউন্ট তৈরি করুন</h3>
+        <button type="button" onclick="closeModal('auth-modal')" class="w-8 h-8 rounded-lg hover:bg-white/15 flex items-center justify-center">✕</button>
+      </div>
+      <div class="p-5">
+        <div class="flex gap-1 p-1 bg-slate-100 rounded-lg mb-4">
+          <button type="button" id="tab-login-btn" onclick="switchAuthTab('login')" class="flex-1 py-2 text-xs sm:text-sm font-semibold rounded-md bg-white text-slate-900 shadow-sm">লগইন (Login)</button>
+          <button type="button" id="tab-register-btn" onclick="switchAuthTab('register')" class="flex-1 py-2 text-xs sm:text-sm font-semibold rounded-md text-slate-600">রেজিস্ট্রেশন (Register)</button>
+        </div>
+        <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-3">
+          <div id="auth-name-wrap" class="hidden">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">পূর্ণ নাম (Full Name) *</label>
+            <input type="text" id="auth-name" class="w-full h-10 px-3 rounded-lg border border-slate-300 text-sm" placeholder="আপনার নাম লিখুন" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">ইমেইল (Email) *</label>
+            <input type="email" id="auth-email" required class="w-full h-10 px-3 rounded-lg border border-slate-300 text-sm" placeholder="example@mail.com" />
+          </div>
+          <div id="auth-phone-wrap" class="hidden">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">মোবাইল নম্বর (01XXXXXXXXX) *</label>
+            <input type="tel" id="auth-phone" class="w-full h-10 px-3 rounded-lg border border-slate-300 text-sm tabular-nums" placeholder="01712345678" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">পাসওয়ার্ড (Password) *</label>
+            <input type="password" id="auth-password" required minlength="6" class="w-full h-10 px-3 rounded-lg border border-slate-300 text-sm" placeholder="কমপক্ষে ৬ অক্ষর" />
+          </div>
+          <button type="submit" id="auth-submit-btn" class="w-full h-11 rounded-lg bg-[#0E9A4D] hover:bg-[#0A7A3C] text-white font-semibold text-sm">লগইন করুন</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sell Item Modal -->
+  <div id="sell-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-[1px]">
+    <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in max-h-[90vh] flex flex-col">
+      <div class="px-5 py-4 bg-[#0E9A4D] text-white flex items-center justify-between">
+        <h3 class="font-display font-bold text-lg">আপনার ল্যাপটপ বা গ্যাজেট বিক্রি করুন</h3>
+        <button type="button" onclick="closeModal('sell-modal')" class="w-8 h-8 rounded-lg hover:bg-white/15 flex items-center justify-center">✕</button>
+      </div>
+      <form onsubmit="handleSellSubmit(event)" class="p-5 space-y-3 overflow-y-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div><label class="block text-xs font-semibold text-slate-700 mb-1">আপনার নাম *</label><input id="sell-name" required class="w-full h-10 px-3 rounded-lg border border-slate-300 text-sm" placeholder="পূর্ণ নাম" /></div>
+          <div><label class="block text-xs font-semibold text-slate-700 mb-1">মোবাইল নম্বর (01XXXXXXXXX) *</label><input id="sell-phone" required class="w-full h-10 px-3 rounded-lg border border-slate-300 text-sm tabular-nums" placeholder="017XXXXXXXX" /></div>
+        </div>
+        <div><label class="block text-xs font-semibold text-slate-700 mb-1">পণ্যের নাম ও মডেল *</label><input id="sell-title" required class="w-full h-10 px-3 rounded-lg border border-slate-300 text-sm" placeholder="HP EliteBook 840 G7..." /></div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="block text-xs font-semibold text-slate-700 mb-1">অবস্থা</label><select id="sell-condition" class="w-full h-10 px-3 rounded-lg border border-slate-300 text-sm bg-white"><option value="Used">Used (ব্যবহৃত)</option><option value="New">New (নতুন)</option></select></div>
+          <div><label class="block text-xs font-semibold text-slate-700 mb-1">প্রত্যাশিত দাম (৳) *</label><input id="sell-price" type="number" required min="500" class="w-full h-10 px-3 rounded-lg border border-slate-300 text-sm tabular-nums" placeholder="35000" /></div>
+        </div>
+        <div><label class="block text-xs font-semibold text-slate-700 mb-1">বিস্তারিত তথ্য</label><textarea id="sell-details" rows="3" class="w-full p-3 rounded-lg border border-slate-300 text-sm" placeholder="RAM, SSD, ব্যাটারি, সমস্যা থাকলে লিখুন..."></textarea></div>
+        <button type="submit" class="w-full h-11 rounded-lg bg-[#F97316] hover:bg-[#EA580C] text-white font-semibold text-sm">বিক্রির অনুরোধ পাঠান</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Price Drop Alert Modal -->
+  <div id="price-alert-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-[1px]">
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in">
+      <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
+        <h3 class="font-display font-bold text-base">দাম কমলে নোটিফিকেশন পান</h3>
+        <button type="button" onclick="closeModal('price-alert-modal')" class="w-8 h-8 rounded-lg hover:bg-white/15 flex items-center justify-center">✕</button>
+      </div>
+      <form onsubmit="handlePriceAlertSubmit(event)" class="p-5 space-y-3">
+        <input type="hidden" id="alert-product-id" />
+        <p id="alert-product-name" class="text-sm font-semibold text-slate-800"></p>
+        <div><label class="block text-xs font-semibold text-slate-700 mb-1">মোবাইল নম্বর অথবা ইমেইল *</label><input id="alert-contact" required class="w-full h-10 px-3 rounded-lg border border-slate-300 text-sm" placeholder="017XXXXXXXX বা email@mail.com" /></div>
+        <button type="submit" class="w-full h-10 rounded-lg bg-[#0E9A4D] text-white font-semibold text-sm">অ্যালার্ট সেভ করুন</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Assistant Chat Popup -->
+  <div id="assistant-popup" class="hidden fixed bottom-16 md:bottom-20 left-3 right-3 sm:left-auto sm:right-4 z-50 sm:w-[340px] bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col animate-in">
+    <div class="px-4 py-3 bg-[#0E9A4D] text-white flex items-center justify-between">
+      <div><h4 class="font-display font-bold text-sm">Laptop Bazar Assistant</h4><p class="text-[11px] text-emerald-100">তাৎক্ষণিক সাহায্য ও ল্যাপটপ পরামর্শ</p></div>
+      <button type="button" onclick="toggleAssistant(false)" class="w-8 h-8 rounded-lg hover:bg-white/15 flex items-center justify-center">✕</button>
+    </div>
+    <div id="assistant-messages" class="h-72 overflow-y-auto p-3 space-y-2.5 bg-slate-50 text-sm">
+      <div class="bg-white border border-slate-200 rounded-xl p-2.5 text-slate-800 text-xs leading-relaxed">আসসালামু আলাইকুম! আমি <strong>Laptop Bazar BD</strong> অ্যাসিস্ট্যান্ট। বাজেট, ১৩% অ্যাডভান্স পেমেন্ট বা ডেলিভারি সম্পর্কে প্রশ্ন করুন।</div>
+    </div>
+    <div class="px-3 py-2 bg-white border-t border-slate-100 flex gap-1.5 overflow-x-auto no-scrollbar">
+      <button type="button" onclick="sendAssistantQuick('১৩% অ্যাডভান্স নিয়ম কী?')" class="shrink-0 text-[11px] px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">১৩% অ্যাডভান্স?</button>
+      <button type="button" onclick="sendAssistantQuick('৫০ হাজারের মধ্যে ভালো ল্যাপটপ?')" class="shrink-0 text-[11px] px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">৫০k বাজেট</button>
+      <button type="button" onclick="sendAssistantQuick('ডেলিভারি চার্জ কত?')" class="shrink-0 text-[11px] px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">ডেলিভারি চার্জ</button>
+    </div>
+    <form onsubmit="handleAssistantSubmit(event)" class="p-2.5 bg-white border-t border-slate-200 flex gap-2">
+      <input id="assistant-input" type="text" placeholder="আপনার প্রশ্ন লিখুন..." class="flex-1 h-9 px-3 rounded-lg border border-slate-300 text-xs focus:outline-none focus:border-[#0E9A4D]" />
+      <button type="submit" class="h-9 px-3 rounded-lg bg-[#0E9A4D] text-white text-xs font-semibold">পাঠান</button>
+    </form>
+  </div>
+
+  <button type="button" onclick="toggleAssistant()" aria-label="Open Assistant" class="hidden md:flex fixed bottom-5 right-5 z-40 h-12 px-4 rounded-full bg-[#0E9A4D] hover:bg-[#0A7A3C] text-white shadow-lg items-center gap-2 font-semibold text-sm transition-transform hover:scale-105">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span>সহায়তা (Chat)</span>
+  </button>
+
+  <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 grid grid-cols-6 h-14">
+    <button type="button" onclick="navigate('home')" class="flex flex-col items-center justify-center text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="text-[10px] font-medium mt-0.5">হোম</span></button>
+    <button type="button" onclick="navigate('category', { slug: 'all' })" class="flex flex-col items-center justify-center text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span class="text-[10px] font-medium mt-0.5">ক্যাটাগরি</span></button>
+    <button type="button" onclick="focusMobileSearch()" class="flex flex-col items-center justify-center text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span class="text-[10px] font-medium mt-0.5">খুঁজুন</span></button>
+    <button type="button" onclick="toggleCartDrawer(true)" class="relative flex flex-col items-center justify-center text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span id="mobile-cart-badge" class="absolute top-1 right-2 bg-[#F97316] text-white text-[9px] font-bold px-1 rounded-full tabular-nums">0</span><span class="text-[10px] font-medium mt-0.5">কার্ট</span></button>
+    <button type="button" onclick="navigate('account')" class="flex flex-col items-center justify-center text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="text-[10px] font-medium mt-0.5">অ্যাকাউন্ট</span></button>
+    <button type="button" onclick="toggleAssistant()" class="flex flex-col items-center justify-center text-[#0E9A4D] font-semibold"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="text-[10px] font-medium mt-0.5">সহায়তা</span></button>
+  </nav>
+
+  <footer class="bg-slate-900 text-slate-300 border-t border-slate-800 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div><h4 class="font-display font-bold text-white text-lg mb-2">Laptop Bazar BD</h4><p class="text-xs text-slate-400 leading-relaxed">বাংলাদেশের বিশ্বস্ত ল্যাপটপ, ডেস্কটপ ও টেক মার্কেটপ্লেস। ১৩% অ্যাডভান্স পেমেন্ট ও বাকি ক্যাশ অন ডেলিভারি।</p></div>
+      <div><h5 class="font-semibold text-white text-sm mb-3">দ্রুত লিংক</h5><ul class="space-y-2 text-xs"><li><a href="#/" onclick="navigate('home'); return false;" class="hover:text-white">হোম পেজ</a></li><li><a href="#/track" onclick="navigate('track'); return false;" class="hover:text-white">অর্ডার ট্র্যাকিং</a></li><li><a href="#/compare" onclick="navigate('compare'); return false;" class="hover:text-white">দাম তুলনা করুন</a></li></ul></div>
+      <div><h5 class="font-semibold text-white text-sm mb-3">পেমেন্ট ও ডেলিভারি</h5><p class="text-xs text-slate-400 leading-relaxed">bKash, Nagad এবং Rocket এর মাধ্যমে মাত্র ১৩% অ্যাডভান্স পেমেন্ট করে অর্ডার নিশ্চিত করুন।</p></div>
+      <div><h5 class="font-semibold text-white text-sm mb-3">যোগাযোগ ও শোরুম</h5><p class="text-xs text-slate-400">মাল্টিপ্ল্যান সেন্টার (লেভেল-৭), নিউ এলিফ্যান্ট রোড, ঢাকা।</p><p id="footer-hotline" class="text-xs font-semibold text-emerald-400 mt-2 tabular-nums">হটলাইন: 01711-000000</p></div>
+    </div>
+    <div class="border-t border-slate-800 py-4 text-center text-xs text-slate-500">© 2026 Laptop Bazar BD. সর্বস্বত্ব সংরক্ষিত।</div>
+  </footer>
+
+  <script>
+    /* ==========================================================================
+       USER STOREFRONT — FIREBASE CONFIG (admin.html-এর সাথে একই Config বসান)
+       --------------------------------------------------------------------------
+       আপনার Firebase Console থেকে পাওয়া config অবজেক্টটি নিচে বসান।
+       user.html এবং admin.html দুটোতেই একই FIREBASE_CONFIG ব্যবহার করলে
+       অ্যাডমিন প্যানেল থেকে করা যেকোনো পরিবর্তন সাথে সাথে এই পেজে লাইভ দেখাবে।
+    ========================================================================== */
+    const firebaseConfig = {
+      apiKey: "AIzaSyBoTCzjuZ4Z8O76m7FaoeiEUQSlh73HAnU",
+      authDomain: "ed-net-too.firebaseapp.com",
+      projectId: "ed-net-too",
+      storageBucket: "ed-net-too.firebasestorage.app",
+      messagingSenderId: "1015865016543",
+      appId: "1:1015865016543:web:45f3186980e43f57bae96a"
+    };
+    const _RESOLVED_FIREBASE_CONFIG = typeof FIREBASE_CONFIG !== 'undefined'
+      ? FIREBASE_CONFIG
+      : (typeof firebaseConfig !== 'undefined' ? firebaseConfig : null);
+
+    const IS_FIREBASE_CONFIGURED = Boolean(
+      _RESOLVED_FIREBASE_CONFIG && _RESOLVED_FIREBASE_CONFIG.apiKey && !_RESOLVED_FIREBASE_CONFIG.apiKey.includes('YOUR_') &&
+      _RESOLVED_FIREBASE_CONFIG.projectId && !_RESOLVED_FIREBASE_CONFIG.projectId.includes('YOUR_')
+    );
+
+    const I18N = {
+      bn: {
+        trackOrder: 'অর্ডার ট্র্যাক', sellItem: 'পণ্য বিক্রি করুন', login: 'লগইন', account: 'অ্যাকাউন্ট',
+        shoppingCart: 'আপনার শপিং কার্ট', compareNow: 'তুলনা করুন', allCategories: 'সকল ক্যাটাগরি',
+        justIn: 'নতুন এসেছে (Just In)', hotProducts: 'হট ডিলস (Hot Products)', popularProducts: 'জনপ্রিয় পণ্য (Popular)',
+        comparePrices: 'দাম তুলনা করুন (Compare Prices)', addToCart: 'কার্টে যোগ করুন', buyNow: 'এখনই কিনুন',
+        inStock: 'স্টকে আছে', outOfStock: 'স্টক শেষ', newCond: 'New', usedCond: 'Used', sellers: 'বিক্রেতা',
+        callSeller: 'বিক্রেতাকে কল করুন', notifyDrop: 'দাম কমলে জানান', compareSimilar: 'তুলনায় যোগ করুন',
+        share: 'শেয়ার', specsTitle: 'সম্পূর্ণ স্পেসিফিকেশন', checkoutTitle: 'অর্ডার ও ১৩% অ্যাডভান্স পেমেন্ট',
+        confirmOrderBtn: 'অর্ডার কনফার্ম করুন - ১৩% অ্যাডভান্স দিন',
+        errNameRequired: 'অনুগ্রহ করে আপনার পূর্ণ নাম লিখুন।',
+        errPhoneInvalid: 'সঠিক ১১ সংখ্যার বাংলাদেশি মোবাইল নম্বর দিন (যেমন: 01712345678)।',
+        errAddressRequired: 'অনুগ্রহ করে আপনার বিস্তারিত ডেলিভারি ঠিকানা লিখুন।',
+        errLocationRequired: 'বিভাগ, জেলা এবং থানা/উপজেলা নির্বাচন করুন।',
+        emptyCart: 'আপনার কার্টটি বর্তমানে খালি!'
+      },
+      en: {
+        trackOrder: 'Track Order', sellItem: 'Sell Item', login: 'Login', account: 'Account',
+        shoppingCart: 'Shopping Cart', compareNow: 'Compare Now', allCategories: 'All Categories',
+        justIn: 'Just In', hotProducts: 'Hot Products', popularProducts: 'Popular Products',
+        comparePrices: 'Compare Prices', addToCart: 'Add to Cart', buyNow: 'Buy Now',
+        inStock: 'In Stock', outOfStock: 'Out of Stock', newCond: 'New', usedCond: 'Used', sellers: 'Sellers',
+        callSeller: 'Call Seller', notifyDrop: 'Notify on Price Drop', compareSimilar: 'Compare Similar',
+        share: 'Share', specsTitle: 'Full Specification', checkoutTitle: 'Checkout & 13% Advance Payment',
+        confirmOrderBtn: 'Confirm Order - Pay 13% Advance',
+        errNameRequired: 'Please enter your full name.',
+        errPhoneInvalid: 'Enter a valid 11-digit Bangladeshi mobile number (01XXXXXXXXX).',
+        errAddressRequired: 'Please enter your full delivery address.',
+        errLocationRequired: 'Please select Division, District, and Thana / Upazila.',
+        emptyCart: 'Your shopping cart is empty!'
+      }
+    };
+
+    const BD_LOCATIONS = {
+      'Dhaka': {
+        'Dhaka': ['Dhanmondi', 'Mirpur', 'Uttara', 'Gulshan', 'Banani', 'Mohammadpur', 'Motijheel', 'Badda', 'New Market / Elephant Road', 'Savar', 'Keraniganj', 'Jatrabari'],
+        'Gazipur': ['Gazipur Sadar', 'Tongi', 'Kaliakair', 'Kapasia', 'Sreepur'],
+        'Narayanganj': ['Narayanganj Sadar', 'Fatullah', 'Siddhirganj', 'Rupganj', 'Sonargaon'],
+        'Tangail': ['Tangail Sadar', 'Mirzapur', 'Kalihati', 'Madhupur'],
+        'Narsingdi': ['Narsingdi Sadar', 'Palash', 'Shibpur', 'Raipura'],
+        'Faridpur': ['Faridpur Sadar', 'Bhanga', 'Boalmari']
+      },
+      'Chattogram': {
+        'Chattogram': ['Kotwali', 'Panchlaish', 'Agrabad / Double Mooring', 'Halishahar', 'Nasirabad', 'Patenga', 'Sitakunda', 'Hathazari'],
+        'Cumilla': ['Cumilla Sadar', 'Kotbari', 'Chauddagram', 'Daudkandi', 'Laksam'],
+        'Cox\'s Bazar': ['Cox\'s Bazar Sadar', 'Teknaf', 'Chakaria', 'Ukhiya'],
+        'Noakhali': ['Noakhali Sadar', 'Begumganj', 'Companiganj'],
+        'Feni': ['Feni Sadar', 'Chhagalnaiya', 'Daganbhuiyan']
+      },
+      'Rajshahi': {
+        'Rajshahi': ['Boalia', 'Motihar', 'Rajpara', 'Shah Makhdum', 'Paba', 'Godagari'],
+        'Bogura': ['Bogura Sadar', 'Sherpur', 'Shibganj', 'Sariakandi'],
+        'Pabna': ['Pabna Sadar', 'Ishwardi', 'Bera', 'Santhia'],
+        'Sirajganj': ['Sirajganj Sadar', 'Ullapara', 'Shahjadpur'],
+        'Naogaon': ['Naogaon Sadar', 'Mohadevpur', 'Patnitala']
+      },
+      'Khulna': {
+        'Khulna': ['Khulna Sadar', 'Sonadanga', 'Khalishpur', 'Daulatpur', 'Dumuria'],
+        'Jashore': ['Jashore Sadar', 'Jhikargachha', 'Benapole / Sharsha', 'Abhaynagar'],
+        'Kushtia': ['Kushtia Sadar', 'Kumarkhali', 'Bheramara'],
+        'Satkhira': ['Satkhira Sadar', 'Tala', 'Kaliganj']
+      },
+      'Sylhet': {
+        'Sylhet': ['Sylhet Sadar', 'Zindabazar / Kotwali', 'South Surma', 'Beanibazar', 'Golapganj'],
+        'Moulvibazar': ['Moulvibazar Sadar', 'Sreemangal', 'Kulaura'],
+        'Habiganj': ['Habiganj Sadar', 'Madhabpur', 'Bahubal'],
+        'Sunamganj': ['Sunamganj Sadar', 'Jagannathpur', 'Chhatak']
+      },
+      'Barishal': {
+        'Barishal': ['Barishal Sadar', 'Kotwali', 'Bakerganj', 'Banaripara'],
+        'Patuakhali': ['Patuakhali Sadar', 'Kalapara', 'Galachipa'],
+        'Bhola': ['Bhola Sadar', 'Char Fasson', 'Lalmohan']
+      },
+      'Rangpur': {
+        'Rangpur': ['Rangpur Sadar', 'Mithapukur', 'Pirganj', 'Badarganj'],
+        'Dinajpur': ['Dinajpur Sadar', 'Parbatipur', 'Birampur'],
+        'Kurigram': ['Kurigram Sadar', 'Ulipur', 'Nageshwari']
+      },
+      'Mymensingh': {
+        'Mymensingh': ['Mymensingh Sadar', 'Trishal', 'Bhaluka', 'Muktagachha'],
+        'Jamalpur': ['Jamalpur Sadar', 'Sarishabari', 'Islampur'],
+        'Netrokona': ['Netrokona Sadar', 'Kendua', 'Durgapur']
+      }
+    };
+
+    const DEFAULT_CATEGORIES = [
+      { id: 'cat-laptop', nameEn: 'Laptop', nameBn: 'ল্যাপটপ', slug: 'Laptop', order: 1, isActive: true },
+      { id: 'cat-computer', nameEn: 'Computer', nameBn: 'কম্পিউটার', slug: 'Computer', order: 2, isActive: true },
+      { id: 'cat-electronics', nameEn: 'Electronics', nameBn: 'ইলেকট্রনিক্স', slug: 'Electronics', order: 3, isActive: true },
+      { id: 'cat-mobile', nameEn: 'Mobile', nameBn: 'মোবাইল', slug: 'Mobile', order: 4, isActive: true },
+      { id: 'cat-accessories', nameEn: 'Accessories', nameBn: 'এক্সেসরিজ', slug: 'Accessories', order: 5, isActive: true },
+      { id: 'cat-security', nameEn: 'Security', nameBn: 'সিকিউরিটি', slug: 'Security', order: 6, isActive: true },
+      { id: 'cat-household', nameEn: 'Household', nameBn: 'হাউজহোল্ড', slug: 'Household', order: 7, isActive: true },
+      { id: 'cat-carbike', nameEn: 'Car & Bike', nameBn: 'কার ও বাইক', slug: 'Car & Bike', order: 8, isActive: true }
+    ];
+
+    const DEFAULT_BANNERS = [
+      { id: 'ban-1', titleBn: 'প্রিমিয়াম ল্যাপটপ কালেকশন ২০২৬', titleEn: 'Premium Laptop Collection 2026', subtitleBn: 'মাত্র ১৩% অ্যাডভান্সে অর্ডার করুন • সারাদেশে ক্যাশ অন ডেলিভারি', subtitleEn: 'Order with 13% Advance • Cash on Delivery Across Bangladesh', imageUrl: '/images/hero-laptop.jpg', targetCategory: 'Laptop', order: 1, isActive: true },
+      { id: 'ban-2', titleBn: 'গেমিং ও প্রফেশনাল ওয়ার্কস্টেশন', titleEn: 'Gaming & Pro Workstations', subtitleBn: 'সেরা দামে অফিশিয়াল ওয়ারেন্টিসহ RTX সিরিজের ল্যাপটপ ও ডেস্কটপ', subtitleEn: 'Best prices on RTX Gaming Laptops & Desktop Builds', imageUrl: '/images/hero-gaming.jpg', targetCategory: 'Computer', order: 2, isActive: true },
+      { id: 'ban-3', titleBn: 'ব্যবহৃত ফ্রেশ বিজনেস ল্যাপটপ মেলা', titleEn: 'Grade-A Used Business Laptops', subtitleBn: 'দুবাই ও ইউরোপ থেকে ইমপোর্টেড ThinkPad, EliteBook ও MacBook', subtitleEn: 'Imported ThinkPad, EliteBook & MacBook with Replacement Warranty', imageUrl: '/images/prod-business.jpg', targetCategory: 'Laptop', order: 3, isActive: true }
+    ];
+
+    const DEFAULT_SETTINGS = {
+      bkashNumber: '01711-000000', nagadNumber: '01811-000000', rocketNumber: '01911-000000',
+      whatsappNumber: '8801711000000', insideDhakaCharge: 80, outsideDhakaCharge: 150,
+      advancePercent: 13, adminEmails: ['admin@laptopbazarbd.com', 'sssopen420@gmail.com']
+    };
+
+    const DEFAULT_PRODUCTS = [
+      { id: 'prod-1', name: 'Apple MacBook Air M2 (13.6" Liquid Retina, 8GB/256GB)', brand: 'Apple', category: 'Laptop', price: 108500, oldPrice: 122000, condition: 'New', stock: 9, sku: 'LBB-MBA-M2-256', images: ['/images/prod-ultrabook.jpg', '/images/hero-laptop.jpg'], shortDesc: 'অফিশিয়াল ১ বছরের ওয়ারেন্টিসহ একদম নতুন MacBook Air M2 সিলভার কালার।', specs: { Item: 'Ultrabook Laptop', Brand: 'Apple', Model: 'MacBook Air M2', Processor: 'Apple M2 8-Core', RAM: '8GB Unified', SSD: '256GB NVMe', Display: '13.6" Liquid Retina', Warranty: '1 Year Official' }, rating: 4.9, sellerCount: 14, isHot: true, isPopular: true, isFeatured: true, isVisible: true, createdAt: Date.now() - 100000 },
+      { id: 'prod-2', name: 'Lenovo ThinkPad X1 Carbon Gen 9 (Core i7 11th Gen, 16GB/512GB)', brand: 'Lenovo', category: 'Laptop', price: 54500, oldPrice: 64000, condition: 'Used', stock: 6, sku: 'LBB-TP-X1G9', images: ['/images/prod-business.jpg', '/images/hero-laptop.jpg'], shortDesc: 'দুবাই ইমপোর্টেড ফ্রেশ A+ গ্রেড বিজনেস ল্যাপটপ, আল্ট্রা-লাইট কার্বন ফাইবার বডি।', specs: { Item: 'Business Ultrabook', Brand: 'Lenovo', Model: 'ThinkPad X1 Carbon Gen 9', Processor: 'Intel Core i7-1165G7', RAM: '16GB LPDDR4x', SSD: '512GB Gen4 NVMe', Display: '14.0" FHD+ IPS', Warranty: '15 Days Replacement' }, rating: 4.8, sellerCount: 9, isHot: true, isPopular: true, isFeatured: true, isVisible: true, createdAt: Date.now() - 200000 },
+      { id: 'prod-3', name: 'HP EliteBook 840 G8 (Core i5 11th Gen, 16GB/512GB)', brand: 'HP', category: 'Laptop', price: 41900, oldPrice: 48500, condition: 'Used', stock: 12, sku: 'LBB-HP-840G8', images: ['/images/prod-ultrabook.jpg', '/images/prod-business.jpg'], shortDesc: 'ছাত্র-ছাত্রী ও ফ্রিল্যান্সারদের জন্য সেরা বাজেট প্রিমিয়াম মেটাল বডি ল্যাপটপ।', specs: { Item: 'Business Laptop', Brand: 'HP', Model: 'EliteBook 840 G8', Processor: 'Intel Core i5-1135G7', RAM: '16GB DDR4', SSD: '512GB M.2 NVMe', Display: '14" Full HD IPS', Warranty: '15 Days Replacement' }, rating: 4.7, sellerCount: 18, isHot: false, isPopular: true, isFeatured: true, isVisible: true, createdAt: Date.now() - 300000 },
+      { id: 'prod-4', name: 'ASUS ROG Strix G16 Gaming (Core i7 13th Gen, RTX 4060 8GB)', brand: 'ASUS', category: 'Laptop', price: 168000, oldPrice: 182000, condition: 'New', stock: 4, sku: 'LBB-ROG-G16-4060', images: ['/images/hero-gaming.jpg', '/images/prod-business.jpg'], shortDesc: 'হেভি ভিডিও এডিটিং, ৩ডি রেন্ডারিং ও AAA গেমিংয়ের জন্য পাওয়ারহাউস ল্যাপটপ।', specs: { Item: 'Gaming Laptop', Brand: 'ASUS', Model: 'ROG Strix G16', Processor: 'Intel Core i7-13650HX', RAM: '16GB DDR5', SSD: '1TB PCIe 4.0', Display: '16" 165Hz 100% sRGB', Graphics: 'RTX 4060 8GB', Warranty: '2 Years Official' }, rating: 4.9, sellerCount: 7, isHot: true, isPopular: false, isFeatured: true, isVisible: true, createdAt: Date.now() - 400000 },
+      { id: 'prod-5', name: 'Dell XPS 13 9315 (Core i5 12th Gen, 16GB/512GB)', brand: 'Dell', category: 'Laptop', price: 89500, oldPrice: 98000, condition: 'New', stock: 5, sku: 'LBB-DELL-9315', images: ['/images/prod-ultrabook.jpg'], shortDesc: 'বেজেল-লেস ইনফিনিটি এজ ডিসপ্লে ও প্রিমিয়াম সিএনসি অ্যালুমিনিয়াম ডিজাইন।', specs: { Item: 'Ultrabook', Brand: 'Dell', Model: 'XPS 13 9315', Processor: 'Core i5-1230U', RAM: '16GB LPDDR5', SSD: '512GB NVMe', Display: '13.4" InfinityEdge', Warranty: '1 Year' }, rating: 4.8, sellerCount: 6, isHot: false, isPopular: true, isFeatured: true, isVisible: true, createdAt: Date.now() - 500000 },
+      { id: 'prod-6', name: 'Pro Studio Desktop Setup (Ryzen 7 7700X + 27" 4K IPS Monitor)', brand: 'AMD / Dell', category: 'Computer', price: 134000, oldPrice: 145000, condition: 'New', stock: 5, sku: 'LBB-PC-R7-4K', images: ['/images/prod-desktop.jpg', '/images/hero-gaming.jpg'], shortDesc: 'কম্প্লিট প্রোডাক্টিভিটি ডেস্কটপ বিল্ড সাথে ২৭ ইঞ্চি বর্ডারলেস 4K মনিটর।', specs: { Item: 'Desktop Bundle', Processor: 'AMD Ryzen 7 7700X', RAM: '32GB DDR5', SSD: '1TB 990 Pro', Display: '27" 4K UHD IPS', Warranty: '3 Years' }, rating: 4.9, sellerCount: 5, isHot: true, isPopular: true, isFeatured: false, isVisible: true, createdAt: Date.now() - 600000 },
+      { id: 'prod-7', name: 'Creator Combo: Mechanical Keyboard + MX Mouse + 1TB SSD + Headphone', brand: 'Logitech', category: 'Accessories', price: 18500, oldPrice: 21500, condition: 'New', stock: 20, sku: 'LBB-ACC-COMBO4', images: ['/images/prod-accessories.jpg'], shortDesc: 'মেকানিক্যাল কিবোর্ড, ওয়্যারলেস মাউস, পোর্টেবল SSD ও স্টুডিও হেডফোন।', specs: { Item: 'Accessory Bundle', Keyboard: '75% Mechanical', Storage: '1TB USB-C SSD', Warranty: '1 Year' }, rating: 4.8, sellerCount: 11, isHot: true, isPopular: true, isFeatured: true, isVisible: true, createdAt: Date.now() - 700000 },
+      { id: 'prod-8', name: 'iPhone 15 Pro Max 256GB (Natural Titanium)', brand: 'Apple', category: 'Mobile', price: 138000, oldPrice: 149000, condition: 'New', stock: 7, sku: 'LBB-IP15PM-256', images: ['/images/prod-desktop.jpg'], shortDesc: 'টাইটানিয়াম বডি ও A17 Pro চিপসেট সহ ফ্ল্যাগশিপ স্মার্টফোন।', specs: { Item: 'Smartphone', Chipset: 'A17 Pro', Storage: '256GB', Display: '6.7" 120Hz OLED', Warranty: '1 Year' }, rating: 4.9, sellerCount: 15, isHot: false, isPopular: true, isFeatured: false, isVisible: true, createdAt: Date.now() - 800000 },
+      { id: 'prod-9', name: 'Hikvision 4MP Smart WiFi Security Camera', brand: 'Hikvision', category: 'Security', price: 3850, oldPrice: 4500, condition: 'New', stock: 30, sku: 'LBB-SEC-HIK4MP', images: ['/images/prod-accessories.jpg'], shortDesc: 'বাসা ও অফিসের নিরাপত্তার জন্য টু-ওয়ে অডিও সাপোর্টেড সিসি ক্যামেরা।', specs: { Item: 'IP Camera', Resolution: '4MP QHD', NightVision: '30m Color', Warranty: '1 Year' }, rating: 4.6, sellerCount: 12, isHot: false, isPopular: false, isFeatured: true, isVisible: true, createdAt: Date.now() - 900000 },
+      { id: 'prod-10', name: 'Xiaomi Smart 4K Android Projector', brand: 'Xiaomi', category: 'Electronics', price: 24500, oldPrice: 28000, condition: 'New', stock: 8, sku: 'LBB-ELC-PROJ4K', images: ['/images/hero-gaming.jpg'], shortDesc: 'অটো ফোকাস, ওয়াইফাই-৬ এবং বিল্ট-ইন ডলবি স্পিকার সহ স্মার্ট প্রজেক্টর।', specs: { Item: 'Smart Projector', Brightness: '800 ANSI Lumens', OS: 'Android TV 12', Warranty: '1 Year' }, rating: 4.7, sellerCount: 6, isHot: false, isPopular: true, isFeatured: false, isVisible: true, createdAt: Date.now() - 1000000 },
+      { id: 'prod-11', name: 'Philips Smart Air Purifier Pro', brand: 'Philips', category: 'Household', price: 16900, oldPrice: 19500, condition: 'New', stock: 10, sku: 'LBB-HH-PHILIPS', images: ['/images/hero-laptop.jpg'], shortDesc: 'HEPA-13 ফিল্টারযুক্ত স্মার্ট এয়ার পিউরিফায়ার।', specs: { Item: 'Air Purifier', Filter: 'HEPA-13', Coverage: '450 sq ft', Warranty: '2 Years' }, rating: 4.6, sellerCount: 4, isHot: false, isPopular: false, isFeatured: false, isVisible: true, createdAt: Date.now() - 1100000 },
+      { id: 'prod-12', name: '70mai A800S 4K Dual Dash Cam & GPS Tracker', brand: '70mai', category: 'Car & Bike', price: 11200, oldPrice: 13000, condition: 'New', stock: 11, sku: 'LBB-CAR-70MAI', images: ['/images/prod-accessories.jpg'], shortDesc: 'Sony IMX415 সেন্সরযুক্ত 4K কার ড্যাশ ক্যাম।', specs: { Item: 'Dash Cam', Resolution: '4K UHD', GPS: 'Built-in ADAS', Warranty: '1 Year' }, rating: 4.8, sellerCount: 8, isHot: true, isPopular: false, isFeatured: false, isVisible: true, createdAt: Date.now() - 1200000 }
+    ];
+
+    const STORAGE_KEYS = {
+      DB: 'lbb_sandbox_db_v1', CART: 'lbb_cart_v1', WISHLIST: 'lbb_wishlist_v1',
+      COMPARE: 'lbb_compare_v1', LANG: 'lbb_lang_v1', USER: 'lbb_sandbox_user_v1'
+    };
+
+    const state = {
+      lang: localStorage.getItem(STORAGE_KEYS.LANG) || 'bn',
+      route: 'home', routeParams: {}, products: [], categories: [], banners: [], orders: [],
+      settings: { ...DEFAULT_SETTINGS },
+      cart: JSON.parse(localStorage.getItem(STORAGE_KEYS.CART) || '[]'),
+      wishlist: JSON.parse(localStorage.getItem(STORAGE_KEYS.WISHLIST) || '[]'),
+      compareIds: JSON.parse(localStorage.getItem(STORAGE_KEYS.COMPARE) || '[]'),
+      currentUser: null, heroIndex: 0, heroTimer: null, searchQuery: '', activeCategory: 'all',
+      checkoutDirectItems: null, lastOrder: null, selectedGalleryImg: 0, pdpQty: 1
+    };
+
+    const bc = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('lbb_realtime_sync') : null;
+    function t(key) { return (I18N[state.lang] && I18N[state.lang][key]) || I18N.en[key] || key; }
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+    function formatBDT(num) { return '৳' + (Number(num) || 0).toLocaleString('en-IN'); }
+    function validateBDPhone(phone) { return /^01[3-9]\d{8}$/.test(String(phone || '').trim()); }
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const id = 'toast-' + Date.now() + Math.random().toString(16).slice(2, 6);
+      const colorMap = { success: 'bg-slate-900 text-white border-emerald-500', error: 'bg-red-600 text-white border-red-400', info: 'bg-slate-800 text-white border-[#F97316]' };
+      const el = document.createElement('div');
+      el.id = id;
+      el.className = `pointer-events-auto rounded-xl px-4 py-3 shadow-lg border-b-2 text-xs sm:text-sm font-medium flex items-center justify-between gap-3 animate-in ${colorMap[type] || colorMap.success}`;
+      el.innerHTML = `<span>${escapeHtml(message)}</span><button type="button" onclick="this.parentElement.remove()" class="opacity-70 hover:opacity-100">✕</button>`;
+      container.appendChild(el);
+      setTimeout(() => { document.getElementById(id)?.remove(); }, 3600);
+    }
+    function setLoading(show, text = 'লোড হচ্ছে...') {
+      const overlay = document.getElementById('global-loader');
+      document.getElementById('loader-text').textContent = text;
+      overlay.classList.toggle('hidden', !show);
+      overlay.classList.toggle('flex', show);
+    }
+    function renderImg(src, alt, cls = 'w-full h-full object-cover') {
+      return `<img src="${escapeHtml(src || '')}" alt="${escapeHtml(alt || 'Laptop Bazar BD')}" referrerpolicy="no-referrer" loading="lazy" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect width=%22400%22 height=%22300%22 fill=%22%23f1f5f9%22/%3E%3Crect x=%22110%22 y=%2275%22 width=%22180%22 height=%22115%22 rx=%2210%22 fill=%22none%22 stroke=%22%230E9A4D%22 stroke-width=%226%22/%3E%3Cpath d=%22M85 205h230l-14 20H99z%22 fill=%22%23cbd5e1%22/%3E%3Ctext x=%22200%22 y=%22260%22 text-anchor=%22middle%22 fill=%22%2364748b%22 font-family=%22sans-serif%22 font-size=%2214%22%3ELaptop Bazar BD%3C/text%3E%3C/svg%3E';" class="${cls}" />`;
+    }
+
+    let fbAuth = null, fbDb = null, fbStorage = null;
+    function readSandboxDb() {
+      const raw = localStorage.getItem(STORAGE_KEYS.DB);
+      if (raw) { try { return JSON.parse(raw); } catch (_) {} }
+      const initial = { products: DEFAULT_PRODUCTS, categories: DEFAULT_CATEGORIES, banners: DEFAULT_BANNERS, settings: DEFAULT_SETTINGS, orders: [], users: [], sellRequests: [], priceAlerts: [] };
+      localStorage.setItem(STORAGE_KEYS.DB, JSON.stringify(initial));
+      return initial;
+    }
+    function writeSandboxDb(nextDb) {
+      localStorage.setItem(STORAGE_KEYS.DB, JSON.stringify(nextDb));
+      if (bc) bc.postMessage({ type: 'DB_UPDATED' });
+      syncStateFromSandbox();
+    }
+    function syncStateFromSandbox() {
+      const db = readSandboxDb();
+      state.products = (db.products || []).slice().sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      state.categories = (db.categories || []).slice().sort((a, b) => (a.order || 0) - (b.order || 0));
+      state.banners = (db.banners || []).slice().sort((a, b) => (a.order || 0) - (b.order || 0));
+      state.settings = { ...DEFAULT_SETTINGS, ...(db.settings || {}) };
+      state.orders = (db.orders || []).slice().sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      renderHeaderAndBars();
+      renderCurrentRoute();
+    }
+
+    function compressImageToDataUrl(file, maxWidth = 720, quality = 0.68) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const img = new Image();
+          img.onload = () => {
+            const scale = Math.min(1, maxWidth / (img.width || maxWidth));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.max(1, Math.round((img.width || maxWidth) * scale));
+            canvas.height = Math.max(1, Math.round((img.height || maxWidth) * scale));
+            const ctx = canvas.getContext('2d');
+            if (ctx) ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.onerror = () => resolve(String(reader.result || ''));
+          img.src = String(reader.result || '');
         };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth(), db = firebase.firestore();
+        reader.onerror = () => resolve('');
+        reader.readAsDataURL(file);
+      });
+    }
 
-        let user = null, selP = null, selV = null, selM = null;
+    const DataService = {
+      async init() {
+        if (IS_FIREBASE_CONFIGURED && typeof firebase !== 'undefined') {
+          try {
+            if (!firebase.apps.length) firebase.initializeApp(_RESOLVED_FIREBASE_CONFIG);
+            fbAuth = firebase.auth(); fbDb = firebase.firestore();
+            try {
+              fbStorage = firebase.storage();
+              if (fbStorage && typeof fbStorage.setMaxUploadRetryTime === 'function') fbStorage.setMaxUploadRetryTime(3500);
+            } catch (_) { fbStorage = null; }
+            fbAuth.onAuthStateChanged(async (user) => {
+              if (user) {
+                let profile = { uid: user.uid, email: user.email, name: user.displayName || user.email.split('@')[0], phone: '' };
+                try {
+                  const snap = await fbDb.collection('users').doc(user.uid).get();
+                  if (snap.exists) profile = { ...profile, ...snap.data() };
+                } catch (_) {}
+                state.currentUser = profile;
+                // User's own orders listener
+                fbDb.collection('orders').where('userId', '==', user.uid).onSnapshot((snap) => {
+                  state.orders = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                  if (state.route === 'account') renderCurrentRoute();
+                });
+              } else {
+                state.currentUser = null;
+                state.orders = [];
+              }
+              renderHeaderAndBars();
+              if (['account', 'checkout'].includes(state.route)) renderCurrentRoute();
+            });
+            state.categories = DEFAULT_CATEGORIES.slice();
+            state.banners = DEFAULT_BANNERS.slice();
+            fbDb.collection('products').where('isVisible', '==', true).onSnapshot((snap) => {
+              state.products = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+              renderCurrentRoute();
+            });
+            fbDb.collection('categories').onSnapshot((snap) => {
+              state.categories = snap.empty ? DEFAULT_CATEGORIES.slice() : snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.order || 0) - (b.order || 0));
+              renderHeaderAndBars(); renderCurrentRoute();
+            });
+            fbDb.collection('banners').onSnapshot((snap) => {
+              state.banners = snap.empty ? DEFAULT_BANNERS.slice() : snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.order || 0) - (b.order || 0));
+              if (state.route === 'home') renderCurrentRoute();
+            });
+            fbDb.collection('settings').doc('storeConfig').onSnapshot((docSnap) => {
+              if (docSnap.exists) state.settings = { ...DEFAULT_SETTINGS, ...docSnap.data() };
+              renderHeaderAndBars();
+              if (state.route === 'checkout') renderCurrentRoute();
+            });
+            return;
+          } catch (err) { console.error('Firebase init fallback:', err); }
+        }
+        const savedUser = localStorage.getItem(STORAGE_KEYS.USER);
+        if (savedUser) state.currentUser = JSON.parse(savedUser);
+        if (bc) bc.onmessage = (ev) => { if (ev.data && ev.data.type === 'DB_UPDATED') syncStateFromSandbox(); };
+        syncStateFromSandbox();
+      },
+      async uploadImageFile(file, folder = 'payment_screenshots') {
+        if (!file) return '';
+        if (IS_FIREBASE_CONFIGURED && fbStorage) {
+          try {
+            const ref = fbStorage.ref().child(`${folder}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '')}`);
+            await ref.put(file);
+            return await ref.getDownloadURL();
+          } catch (storageErr) {
+            console.warn('Firebase Storage disabled/Spark fallback:', storageErr && storageErr.message);
+          }
+        }
+        return await compressImageToDataUrl(file, 720, 0.68);
+      },
+      async createOrder(orderData) {
+        if (IS_FIREBASE_CONFIGURED && fbDb) {
+          await fbDb.collection('orders').doc(orderData.orderId).set(orderData);
+          return orderData;
+        }
+        const db = readSandboxDb();
+        db.orders = [orderData, ...(db.orders || [])];
+        writeSandboxDb(db);
+        return orderData;
+      },
+      async findOrderForTracking(orderId, phone) {
+        const cleanId = orderId.trim().toUpperCase(), cleanPhone = phone.trim();
+        if (IS_FIREBASE_CONFIGURED && fbDb) {
+          const docSnap = await fbDb.collection('orders').doc(cleanId).get();
+          if (docSnap.exists && docSnap.data().phone === cleanPhone) return { id: docSnap.id, ...docSnap.data() };
+          return null;
+        }
+        return state.orders.find(o => o.orderId.toUpperCase() === cleanId && o.phone === cleanPhone) || null;
+      },
+      async submitSellRequest(payload) {
+        if (IS_FIREBASE_CONFIGURED && fbDb) { await fbDb.collection('sellRequests').add(payload); return; }
+        const db = readSandboxDb(); db.sellRequests = [payload, ...(db.sellRequests || [])]; writeSandboxDb(db);
+      },
+      async submitPriceAlert(payload) {
+        if (IS_FIREBASE_CONFIGURED && fbDb) { await fbDb.collection('priceAlerts').add(payload); return; }
+        const db = readSandboxDb(); db.priceAlerts = [payload, ...(db.priceAlerts || [])]; writeSandboxDb(db);
+      }
+    };
 
-        auth.onAuthStateChanged(u => {
-            if(u) { user = u; toggleScreen('homeScreen'); document.getElementById('navbar').style.display='flex'; loadData(); }
-            else { toggleScreen('loginScreen'); document.getElementById('navbar').style.display='none'; }
+    function getVisibleProducts() { return state.products.filter(p => p.isVisible !== false); }
+
+    function renderHeaderAndBars() {
+      const langBtn = document.getElementById('lang-toggle-btn');
+      if (langBtn) langBtn.textContent = state.lang === 'bn' ? 'BN / EN' : 'EN / BN';
+      document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if (k) el.textContent = t(k); });
+      const count = state.cart.reduce((s, i) => s + (i.qty || 1), 0);
+      const hc = document.getElementById('header-cart-count'), mc = document.getElementById('mobile-cart-badge');
+      if (hc) hc.textContent = count; if (mc) mc.textContent = count;
+      const accBtn = document.getElementById('header-account-btn');
+      if (accBtn) accBtn.textContent = state.currentUser ? (state.currentUser.name || t('account')).split(' ')[0] : t('login');
+      const fh = document.getElementById('footer-hotline');
+      if (fh) fh.textContent = `হটলাইন / WhatsApp: +${state.settings.whatsappNumber || '8801711000000'}`;
+
+      const catWrap = document.getElementById('category-tabs');
+      if (catWrap) {
+        const activeCats = state.categories.filter(c => c.isActive !== false);
+        const allActive = state.route === 'home' || (state.route === 'category' && state.activeCategory === 'all');
+        let html = `<button type="button" onclick="selectCategory('all')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap shrink-0 ${allActive ? 'bg-[#0E9A4D] text-white' : 'text-slate-700 hover:bg-slate-100'}">${t('allCategories')}</button>`;
+        activeCats.forEach(c => {
+          const isAct = state.route === 'category' && state.activeCategory === c.slug;
+          html += `<button type="button" onclick="selectCategory('${escapeHtml(c.slug)}')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap shrink-0 ${isAct ? 'bg-[#0E9A4D] text-white font-semibold' : 'text-slate-700 hover:bg-slate-100'}">${escapeHtml(state.lang === 'bn' ? (c.nameBn || c.nameEn) : c.nameEn)}</button>`;
         });
+        catWrap.innerHTML = html;
+      }
+      const tray = document.getElementById('compare-tray'), cCount = document.getElementById('compare-count');
+      if (tray && cCount) {
+        if (state.compareIds.length > 0 && state.route !== 'compare') { cCount.textContent = state.compareIds.length; tray.classList.remove('hidden'); }
+        else tray.classList.add('hidden');
+      }
+    }
 
-        function toggleScreen(id, el) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            if(el) { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
+    function renderProductCard(p) {
+      const inWish = state.wishlist.includes(p.id), inCompare = state.compareIds.includes(p.id);
+      const discount = p.oldPrice && p.oldPrice > p.price ? Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100) : 0;
+      const condLabel = p.condition === 'Used' ? t('usedCond') : t('newCond');
+      return `
+        <article class="product-card bg-white rounded-xl border border-slate-200 overflow-hidden flex flex-col">
+          <div class="relative aspect-[4/3] bg-slate-100 overflow-hidden cursor-pointer" onclick="openProduct('${escapeHtml(p.id)}')">
+            ${renderImg((p.images && p.images[0]) || '', p.name)}
+            <button type="button" onclick="event.stopPropagation(); toggleWishlist('${escapeHtml(p.id)}')" aria-label="Wishlist" class="absolute top-2.5 right-2.5 w-9 h-9 rounded-full bg-white/90 hover:bg-white shadow-sm flex items-center justify-center ${inWish ? 'text-red-500' : 'text-slate-400 hover:text-red-500'}">
+              <svg class="w-4 h-4" fill="${inWish ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+          </div>
+          <div class="p-3.5 flex-1 flex flex-col">
+            <div class="flex items-center justify-between gap-2 text-[11px] font-medium text-slate-500 mb-1">
+              <span class="truncate">${escapeHtml(p.brand)} · <strong class="${p.condition === 'Used' ? 'text-amber-700' : 'text-[#0E9A4D]'}">${condLabel}</strong></span>
+              ${discount > 0 ? `<span class="tabular-nums text-[#F97316] font-semibold shrink-0">-${discount}%</span>` : ''}
+            </div>
+            <h3 onclick="openProduct('${escapeHtml(p.id)}')" class="text-sm font-semibold text-slate-900 line-clamp-2 cursor-pointer hover:text-[#0E9A4D] leading-snug mb-2 min-h-[2.5rem]">${escapeHtml(p.name)}</h3>
+            <div class="mt-auto pt-2 border-t border-slate-100">
+              <div class="flex items-baseline gap-2">
+                <span class="text-base sm:text-lg font-bold text-[#0E9A4D] tabular-nums">${formatBDT(p.price)}</span>
+                ${p.oldPrice && p.oldPrice > p.price ? `<span class="text-xs text-slate-400 line-through tabular-nums">${formatBDT(p.oldPrice)}</span>` : ''}
+              </div>
+              <div class="flex items-center justify-between text-[11px] text-slate-500 mt-1 tabular-nums"><span>★ ${Number(p.rating || 4.7).toFixed(1)}</span><span>${p.sellerCount || 5} ${t('sellers')}</span></div>
+              <div class="grid grid-cols-2 gap-1.5 mt-3">
+                <button type="button" onclick="addToCart('${escapeHtml(p.id)}', 1)" class="h-9 px-2 rounded-lg bg-[#0E9A4D] hover:bg-[#0A7A3C] text-white text-xs font-semibold whitespace-nowrap">${t('addToCart')}</button>
+                <button type="button" onclick="toggleCompare('${escapeHtml(p.id)}')" class="h-9 px-2 rounded-lg border text-xs font-semibold whitespace-nowrap ${inCompare ? 'border-[#F97316] bg-orange-50 text-[#EA580C]' : 'border-slate-200 text-slate-700 hover:bg-slate-50'}">${inCompare ? '✓ তুলনায়' : '+ তুলনা'}</button>
+              </div>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderHome() {
+      const visible = getVisibleProducts();
+      const activeBanners = state.banners.filter(b => b.isActive !== false);
+      const justIn = visible.slice(0, 4), hotProducts = visible.filter(p => p.isHot).slice(0, 4), popularProducts = visible.filter(p => p.isPopular).slice(0, 4), compareShowcase = visible.slice(0, 3);
+      const safeHeroIdx = activeBanners.length ? (state.heroIndex % activeBanners.length) : 0;
+      const currentBanner = activeBanners[safeHeroIdx];
+      return `
+        <div class="space-y-8 animate-in">
+          ${currentBanner ? `
+            <section class="relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-200 shadow-sm">
+              <div class="relative aspect-[16/9] sm:aspect-[21/8] max-h-[380px] w-full overflow-hidden">
+                ${renderImg(currentBanner.imageUrl, currentBanner.titleEn)}
+                <div class="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-900/50 to-transparent flex items-center">
+                  <div class="p-5 sm:p-10 max-w-xl text-white">
+                    <p class="text-xs font-semibold text-emerald-300 mb-1.5">Laptop Bazar BD · ১৩% অ্যাডভান্স ও COD</p>
+                    <h1 class="font-display text-xl sm:text-3xl lg:text-4xl font-bold leading-tight mb-2" style="text-wrap:balance;">${escapeHtml(state.lang === 'bn' ? currentBanner.titleBn : currentBanner.titleEn)}</h1>
+                    <p class="text-xs sm:text-sm text-slate-200 mb-4 line-clamp-2">${escapeHtml(state.lang === 'bn' ? currentBanner.subtitleBn : currentBanner.subtitleEn)}</p>
+                    <div class="flex flex-wrap items-center gap-2.5">
+                      <button type="button" onclick="selectCategory('${escapeHtml(currentBanner.targetCategory || 'Laptop')}')" class="h-10 px-5 rounded-lg bg-[#0E9A4D] hover:bg-[#0A7A3C] text-white text-xs sm:text-sm font-semibold">${state.lang === 'bn' ? 'এখনই দেখুন' : 'Shop Now'}</button>
+                      <button type="button" onclick="navigate('track')" class="h-10 px-4 rounded-lg bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm font-semibold backdrop-blur-sm">${t('trackOrder')}</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              ${activeBanners.length > 1 ? `<button type="button" onclick="shiftHero(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/45 text-white flex items-center justify-center">‹</button><button type="button" onclick="shiftHero(1)" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/45 text-white flex items-center justify-center">›</button>` : ''}
+            </section>
+          ` : ''}
+          <section><div class="flex items-center justify-between mb-4"><h2 class="font-display text-lg sm:text-xl font-bold text-slate-900">${t('justIn')}</h2><button type="button" onclick="selectCategory('all')" class="text-xs sm:text-sm font-semibold text-[#0E9A4D] hover:underline">সব দেখুন →</button></div><div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">${justIn.map(renderProductCard).join('')}</div></section>
+          <section><div class="flex items-center justify-between mb-4"><h2 class="font-display text-lg sm:text-xl font-bold text-slate-900">${t('hotProducts')}</h2><span class="text-xs font-semibold text-[#F97316]">সীমিত স্টক অফার</span></div><div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">${(hotProducts.length ? hotProducts : visible.slice(0, 4)).map(renderProductCard).join('')}</div></section>
+          <section><div class="flex items-center justify-between mb-4"><h2 class="font-display text-lg sm:text-xl font-bold text-slate-900">${t('popularProducts')}</h2><button type="button" onclick="selectCategory('Laptop')" class="text-xs sm:text-sm font-semibold text-[#0E9A4D] hover:underline">সব ল্যাপটপ →</button></div><div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">${(popularProducts.length ? popularProducts : visible.slice(0, 4)).map(renderProductCard).join('')}</div></section>
+          <section class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+              <div><h2 class="font-display text-lg sm:text-xl font-bold text-slate-900">${t('comparePrices')}</h2><p class="text-xs text-slate-500">জনপ্রিয় ল্যাপটপগুলোর স্পেসিফিকেশন ও দাম এক নজরে তুলনা করুন</p></div>
+              <button type="button" onclick="navigate('compare')" class="h-9 px-4 rounded-lg bg-slate-900 text-white text-xs font-semibold">সম্পূর্ণ কম্পেয়ার টেবিল</button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs sm:text-sm border-collapse">
+                <thead><tr class="border-b border-slate-200 text-slate-500"><th class="py-2.5 pr-4 font-semibold">পণ্য</th><th class="py-2.5 px-3 font-semibold">প্রসেসর / মডেল</th><th class="py-2.5 px-3 font-semibold">অবস্থা</th><th class="py-2.5 px-3 font-semibold">বিক্রেতা</th><th class="py-2.5 pl-3 font-semibold text-right">সেরা দাম</th></tr></thead>
+                <tbody class="divide-y divide-slate-100">
+                  ${compareShowcase.map(p => `<tr class="hover:bg-slate-50 cursor-pointer" onclick="openProduct('${escapeHtml(p.id)}')"><td class="py-3 pr-4 font-semibold text-slate-900 min-w-[200px]">${escapeHtml(p.name)}</td><td class="py-3 px-3 text-slate-600">${escapeHtml((p.specs && (p.specs.Processor || p.specs.Model)) || p.brand)}</td><td class="py-3 px-3 font-medium ${p.condition === 'Used' ? 'text-amber-700' : 'text-[#0E9A4D]'}">${escapeHtml(p.condition)}</td><td class="py-3 px-3 tabular-nums text-slate-600">${p.sellerCount || 5} জন</td><td class="py-3 pl-3 text-right font-bold text-[#0E9A4D] tabular-nums whitespace-nowrap">${formatBDT(p.price)}</td></tr>`).join('')}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      `;
+    }
+
+    function renderCategoryOrSearch() {
+      const visible = getVisibleProducts(), q = (state.searchQuery || '').trim().toLowerCase();
+      let list = visible;
+      if (state.route === 'category' && state.activeCategory && state.activeCategory !== 'all') list = list.filter(p => (p.category || '').toLowerCase() === state.activeCategory.toLowerCase());
+      if (q) list = list.filter(p => (p.name || '').toLowerCase().includes(q) || (p.brand || '').toLowerCase().includes(q) || (p.sku || '').toLowerCase().includes(q));
+      const title = state.route === 'search' ? `"${escapeHtml(state.searchQuery)}" (${list.length})` : `${state.activeCategory === 'all' ? t('allCategories') : escapeHtml(state.activeCategory)} (${list.length})`;
+      return `
+        <div class="space-y-5 animate-in">
+          <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-xl border border-slate-200"><h1 class="font-display text-lg sm:text-xl font-bold text-slate-900">${title}</h1>${q ? `<button type="button" onclick="clearSearch()" class="h-9 px-3 rounded-lg border border-slate-200 text-xs font-semibold">রিসেট</button>` : ''}</div>
+          ${list.length ? `<div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">${list.map(renderProductCard).join('')}</div>` : `<div class="bg-white rounded-2xl border border-slate-200 p-10 text-center"><p class="text-base font-semibold mb-2">কোনো পণ্য পাওয়া যায়নি!</p><button type="button" onclick="navigate('home')" class="h-10 px-5 rounded-lg bg-[#0E9A4D] text-white text-sm font-semibold">হোম পেজে ফিরে যান</button></div>`}
+        </div>
+      `;
+    }
+
+    function renderProductDetails() {
+      const p = state.products.find(x => x.id === state.routeParams.id);
+      if (!p) return `<div class="bg-white rounded-2xl p-10 text-center border border-slate-200"><p class="font-semibold mb-3">পণ্যটি পাওয়া যায়নি</p><button onclick="navigate('home')" class="h-10 px-5 rounded-lg bg-[#0E9A4D] text-white text-sm font-semibold">হোমে ফিরুন</button></div>`;
+      const imgs = (p.images && p.images.length) ? p.images : ['/images/prod-ultrabook.jpg'];
+      const mainImg = imgs[state.selectedGalleryImg % imgs.length], specEntries = Object.entries(p.specs || {}), inWish = state.wishlist.includes(p.id);
+      const similar = getVisibleProducts().filter(x => x.id !== p.id && x.category === p.category).slice(0, 4);
+      const advancePreview = Math.round(p.price * ((state.settings.advancePercent || 13) / 100));
+      return `
+        <div class="space-y-8 animate-in">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200 p-4">
+              <div class="aspect-[4/3] bg-slate-100 rounded-xl overflow-hidden mb-3">${renderImg(mainImg, p.name)}</div>
+              ${imgs.length > 1 ? `<div class="flex items-center gap-2 overflow-x-auto">${imgs.map((u, idx) => `<button type="button" onclick="state.selectedGalleryImg=${idx}; renderCurrentRoute();" class="w-16 h-14 rounded-lg overflow-hidden border-2 shrink-0 ${idx === (state.selectedGalleryImg % imgs.length) ? 'border-[#0E9A4D]' : 'border-slate-200 opacity-75'}">${renderImg(u, p.name)}</button>`).join('')}</div>` : ''}
+            </div>
+            <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 space-y-4">
+              <div class="flex items-center justify-between text-xs text-slate-500"><span>SKU: <strong class="tabular-nums text-slate-800">${escapeHtml(p.sku || p.id)}</strong> · ${escapeHtml(p.brand)} · <strong>${escapeHtml(p.condition)}</strong></span><button type="button" onclick="shareProduct('${escapeHtml(p.id)}')" class="text-[#0E9A4D] font-semibold">${t('share')}</button></div>
+              <h1 class="font-display text-xl sm:text-2xl font-bold text-slate-900">${escapeHtml(p.name)}</h1>
+              <div class="flex items-center gap-3 text-xs font-semibold"><span class="${p.stock > 0 ? 'text-[#0E9A4D]' : 'text-red-600'}">${p.stock > 0 ? `✓ ${t('inStock')} (${p.stock})` : t('outOfStock')}</span><span>|</span><span class="tabular-nums text-slate-600">★ ${Number(p.rating || 4.8).toFixed(1)} · ${p.sellerCount || 6} ${t('sellers')}</span></div>
+              <p class="text-sm text-slate-600">${escapeHtml(p.shortDesc)}</p>
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-1.5">
+                <div class="flex items-baseline gap-3"><span class="text-2xl sm:text-3xl font-bold text-[#0E9A4D] tabular-nums">${formatBDT(p.price)}</span>${p.oldPrice && p.oldPrice > p.price ? `<span class="text-sm text-slate-400 line-through tabular-nums">${formatBDT(p.oldPrice)}</span>` : ''}</div>
+                <p class="text-xs text-slate-600">অর্ডার কনফার্ম করতে মাত্র <strong class="text-[#F97316] tabular-nums">${state.settings.advancePercent || 13}% অ্যাডভান্স (${formatBDT(advancePreview)})</strong> — বাকি টাকা Cash on Delivery</p>
+              </div>
+              <div class="flex flex-wrap items-center gap-3">
+                <div class="flex items-center border border-slate-300 rounded-lg h-11 bg-white"><button type="button" onclick="changePdpQty(-1)" class="w-10 h-full text-lg font-bold">-</button><span class="w-10 text-center font-bold tabular-nums text-sm">${state.pdpQty}</span><button type="button" onclick="changePdpQty(1)" class="w-10 h-full text-lg font-bold">+</button></div>
+                <button type="button" onclick="buyNowSingle('${escapeHtml(p.id)}')" class="flex-1 min-w-[150px] h-11 px-5 rounded-lg bg-[#0E9A4D] hover:bg-[#0A7A3C] text-white font-bold text-sm">${t('buyNow')}</button>
+                <button type="button" onclick="addToCart('${escapeHtml(p.id)}', state.pdpQty)" class="h-11 px-4 rounded-lg bg-[#F97316] hover:bg-[#EA580C] text-white font-bold text-sm">${t('addToCart')}</button>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
+                <a href="tel:+${escapeHtml(state.settings.whatsappNumber || '8801711000000')}" class="h-10 px-3 rounded-lg border border-slate-200 flex items-center justify-center text-xs font-semibold">📞 ${t('callSeller')}</a>
+                <button type="button" onclick="openPriceAlertModal('${escapeHtml(p.id)}', '${escapeHtml(p.name)}')" class="h-10 px-3 rounded-lg border border-slate-200 text-xs font-semibold">🔔 ${t('notifyDrop')}</button>
+                <button type="button" onclick="toggleCompare('${escapeHtml(p.id)}')" class="h-10 px-3 rounded-lg border border-slate-200 text-xs font-semibold">⚖️ ${t('compareSimilar')}</button>
+                <button type="button" onclick="toggleWishlist('${escapeHtml(p.id)}')" class="h-10 px-3 rounded-lg border border-slate-200 text-xs font-semibold ${inWish ? 'text-red-500' : ''}">${inWish ? '♥ সেভড' : '♡ উইশলিস্ট'}</button>
+              </div>
+            </div>
+          </div>
+          <section class="bg-white rounded-2xl border border-slate-200 overflow-hidden"><div class="px-5 py-4 border-b border-slate-200 bg-slate-50"><h2 class="font-display font-bold text-base sm:text-lg">${t('specsTitle')}</h2></div><div class="divide-y divide-slate-100">${specEntries.map(([k, v]) => `<div class="grid grid-cols-1 sm:grid-cols-12 px-5 py-3 text-sm"><div class="sm:col-span-4 font-semibold text-slate-600">${escapeHtml(k)}</div><div class="sm:col-span-8 text-slate-900">${escapeHtml(v)}</div></div>`).join('')}</div></section>
+          ${similar.length ? `<section><h2 class="font-display text-lg font-bold mb-4">একই ক্যাটাগরির আরও পণ্য</h2><div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">${similar.map(renderProductCard).join('')}</div></section>` : ''}
+        </div>
+      `;
+    }
+
+    function renderCompareView() {
+      const items = state.compareIds.map(id => state.products.find(p => p.id === id)).filter(Boolean);
+      const displayItems = items.length ? items : getVisibleProducts().slice(0, 3);
+      const allSpecKeys = Array.from(new Set(displayItems.flatMap(p => Object.keys(p.specs || {}))));
+      return `
+        <div class="space-y-5 animate-in">
+          <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-xl border border-slate-200"><div><h1 class="font-display text-xl font-bold">পণ্য ও দাম তুলনা</h1></div>${items.length ? `<button type="button" onclick="clearCompare(); renderCurrentRoute();" class="h-9 px-3 rounded-lg border text-xs font-semibold">খালি করুন</button>` : ''}</div>
+          <div class="bg-white rounded-2xl border border-slate-200 overflow-x-auto"><table class="w-full text-left text-xs sm:text-sm min-w-[640px]"><thead><tr class="border-b bg-slate-50"><th class="p-4 w-44">বৈশিষ্ট্য</th>${displayItems.map(p => `<th class="p-4 align-top"><div class="aspect-[4/3] w-32 bg-slate-100 rounded-lg overflow-hidden mb-2">${renderImg((p.images && p.images[0]) || '', p.name)}</div><div class="font-bold line-clamp-2">${escapeHtml(p.name)}</div><div class="text-base font-bold text-[#0E9A4D] tabular-nums mt-1">${formatBDT(p.price)}</div></th>`).join('')}</tr></thead><tbody class="divide-y divide-slate-100">${allSpecKeys.map(k => `<tr><td class="p-3.5 font-semibold text-slate-600">${escapeHtml(k)}</td>${displayItems.map(p => `<td class="p-3.5">${escapeHtml((p.specs && p.specs[k]) || '—')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+        </div>
+      `;
+    }
+
+    function renderTrackOrder() {
+      const steps = ['Pending Payment Verification', 'Advance Received', 'Processing', 'Shipped', 'Delivered'];
+      const tracked = state.routeParams.trackedOrder || null, curIdx = tracked ? steps.indexOf(tracked.status) : -1;
+      return `
+        <div class="max-w-2xl mx-auto space-y-6 animate-in">
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6">
+            <h1 class="font-display text-xl font-bold mb-1">অর্ডার ট্র্যাকিং</h1>
+            <p class="text-xs text-slate-500 mb-4">আপনার Order ID (LB-...) এবং মোবাইল নম্বর দিন।</p>
+            <form onsubmit="handleTrackSubmit(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <input id="track-order-id" required value="${escapeHtml(state.routeParams.lastTrackId || '')}" class="h-11 px-3.5 rounded-lg border border-slate-300 text-sm uppercase" placeholder="LB-XXXXXX" />
+              <input id="track-phone" required value="${escapeHtml(state.routeParams.lastTrackPhone || '')}" class="h-11 px-3.5 rounded-lg border border-slate-300 text-sm tabular-nums" placeholder="01XXXXXXXXX" />
+              <button type="submit" class="h-11 rounded-lg bg-[#0E9A4D] text-white font-semibold text-sm">ট্র্যাক করুন</button>
+            </form>
+          </div>
+          ${tracked ? `<div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 space-y-4"><div class="flex justify-between pb-3 border-b"><div><span class="text-xs text-slate-500">Order ID</span><h2 class="font-bold text-lg tabular-nums">${escapeHtml(tracked.orderId)}</h2></div><div class="text-right"><span class="text-xs text-slate-500">স্ট্যাটাস</span><p class="text-sm font-bold text-[#0E9A4D]">${escapeHtml(tracked.status)}</p></div></div><div class="space-y-2.5">${steps.map((st, idx) => `<div class="flex items-center gap-3"><div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${idx <= curIdx ? 'bg-[#0E9A4D] text-white' : 'bg-slate-200 text-slate-500'}">${idx <= curIdx ? '✓' : idx + 1}</div><span class="text-sm ${idx <= curIdx ? 'font-semibold' : 'text-slate-400'}">${escapeHtml(st)}</span></div>`).join('')}</div></div>` : ''}
+        </div>
+      `;
+    }
+
+    const checkoutDraft = { name: '', phone: '', whatsapp: '', division: 'Dhaka', district: 'Dhaka', thana: 'Dhanmondi', address: '', deliveryMethod: 'inside', notes: '', paymentMethod: 'bKash', trxId: '', senderNumber: '', screenshotFile: null, screenshotPreview: '' };
+    function getCheckoutItems() {
+      if (state.checkoutDirectItems && state.checkoutDirectItems.length) return state.checkoutDirectItems;
+      return state.cart.map(c => { const p = state.products.find(x => x.id === c.id); return p ? { ...p, qty: c.qty } : null; }).filter(Boolean);
+    }
+    function computeCheckoutTotals(items) {
+      const subtotal = items.reduce((s, i) => s + (Number(i.price) * Number(i.qty || 1)), 0);
+      let deliveryCharge = 0;
+      if (checkoutDraft.deliveryMethod === 'inside') deliveryCharge = Number(state.settings.insideDhakaCharge ?? 80);
+      else if (checkoutDraft.deliveryMethod === 'outside') deliveryCharge = Number(state.settings.outsideDhakaCharge ?? 150);
+      const total = subtotal + deliveryCharge, advPct = Number(state.settings.advancePercent ?? 13);
+      const advance = Math.round((total * advPct) / 100), remaining = Math.max(0, total - advance);
+      return { subtotal, deliveryCharge, total, advPct, advance, remaining };
+    }
+    function getActiveDepositNumber(m) { return m === 'bKash' ? state.settings.bkashNumber : m === 'Nagad' ? state.settings.nagadNumber : state.settings.rocketNumber; }
+
+    function renderCheckout() {
+      const items = getCheckoutItems();
+      if (!items.length) return `<div class="max-w-lg mx-auto bg-white rounded-2xl border p-8 text-center"><p class="font-semibold mb-3">${t('emptyCart')}</p><button onclick="navigate('home')" class="h-10 px-5 rounded-lg bg-[#0E9A4D] text-white text-sm font-semibold">কেনাকাটা শুরু করুন</button></div>`;
+      if (state.currentUser && !checkoutDraft.name) checkoutDraft.name = state.currentUser.name || '';
+      if (state.currentUser && !checkoutDraft.phone) checkoutDraft.phone = state.currentUser.phone || '';
+      const totals = computeCheckoutTotals(items), divisions = Object.keys(BD_LOCATIONS), districts = Object.keys(BD_LOCATIONS[checkoutDraft.division] || BD_LOCATIONS.Dhaka);
+      if (!districts.includes(checkoutDraft.district)) checkoutDraft.district = districts[0];
+      const thanas = (BD_LOCATIONS[checkoutDraft.division] && BD_LOCATIONS[checkoutDraft.division][checkoutDraft.district]) || [];
+      if (!thanas.includes(checkoutDraft.thana)) checkoutDraft.thana = thanas[0] || '';
+      const depositNumber = getActiveDepositNumber(checkoutDraft.paymentMethod);
+
+      return `
+        <div class="space-y-5 animate-in">
+          <h1 class="font-display text-xl sm:text-2xl font-bold">${t('checkoutTitle')}</h1>
+          <form onsubmit="handleCheckoutSubmit(event)" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div class="lg:col-span-7 space-y-5">
+              <section class="bg-white rounded-2xl border border-slate-200 p-5 space-y-4">
+                <h2 class="font-display font-bold text-base border-b pb-2">১. ডেলিভারি তথ্য</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div><label class="block text-xs font-semibold mb-1">পূর্ণ নাম *</label><input type="text" required value="${escapeHtml(checkoutDraft.name)}" oninput="checkoutDraft.name=this.value" class="w-full h-10 px-3 rounded-lg border border-slate-300 text-sm" placeholder="আপনার নাম" /></div>
+                  <div><label class="block text-xs font-semibold mb-1">মোবাইল নম্বর (01XXXXXXXXX) *</label><input type="tel" required value="${escapeHtml(checkoutDraft.phone)}" oninput="checkoutDraft.phone=this.value" class="w-full h-10 px-3 rounded-lg border border-slate-300 text-sm tabular-nums" placeholder="01712345678" /></div>
+                  <div><label class="block text-xs font-semibold mb-1">হোয়াটসঅ্যাপ নম্বর (ঐচ্ছিক)</label><input type="tel" value="${escapeHtml(checkoutDraft.whatsapp)}" oninput="checkoutDraft.whatsapp=this.value" class="w-full h-10 px-3 rounded-lg border border-slate-300 text-sm tabular-nums" placeholder="01XXXXXXXXX" /></div>
+                  <div><label class="block text-xs font-semibold mb-1">বিভাগ *</label><select onchange="onCheckoutDivisionChange(this.value)" class="w-full h-10 px-3 rounded-lg border border-slate-300 text-sm bg-white">${divisions.map(d => `<option value="${escapeHtml(d)}" ${d === checkoutDraft.division ? 'selected' : ''}>${escapeHtml(d)}</option>`).join('')}</select></div>
+                  <div><label class="block text-xs font-semibold mb-1">জেলা *</label><select onchange="onCheckoutDistrictChange(this.value)" class="w-full h-10 px-3 rounded-lg border border-slate-300 text-sm bg-white">${districts.map(d => `<option value="${escapeHtml(d)}" ${d === checkoutDraft.district ? 'selected' : ''}>${escapeHtml(d)}</option>`).join('')}</select></div>
+                  <div><label class="block text-xs font-semibold mb-1">থানা / উপজেলা *</label><select onchange="checkoutDraft.thana=this.value" class="w-full h-10 px-3 rounded-lg border border-slate-300 text-sm bg-white">${thanas.map(th => `<option value="${escapeHtml(th)}" ${th === checkoutDraft.thana ? 'selected' : ''}>${escapeHtml(th)}</option>`).join('')}</select></div>
+                </div>
+                <div><label class="block text-xs font-semibold mb-1">সম্পূর্ণ ডেলিভারি ঠিকানা *</label><textarea required rows="2" oninput="checkoutDraft.address=this.value" class="w-full p-3 rounded-lg border border-slate-300 text-sm" placeholder="বাসা নং, রোড, এলাকা">${escapeHtml(checkoutDraft.address)}</textarea></div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <label class="p-3 rounded-xl border cursor-pointer flex items-center justify-between ${checkoutDraft.deliveryMethod === 'inside' ? 'border-[#0E9A4D] bg-emerald-50/60' : 'border-slate-200'}"><span class="flex items-center gap-2 text-xs font-semibold"><input type="radio" name="dm" ${checkoutDraft.deliveryMethod === 'inside' ? 'checked' : ''} onchange="setDeliveryMethod('inside')" /> ঢাকার ভেতরে</span><span class="text-xs font-bold text-[#0E9A4D] tabular-nums">${formatBDT(state.settings.insideDhakaCharge ?? 80)}</span></label>
+                  <label class="p-3 rounded-xl border cursor-pointer flex items-center justify-between ${checkoutDraft.deliveryMethod === 'outside' ? 'border-[#0E9A4D] bg-emerald-50/60' : 'border-slate-200'}"><span class="flex items-center gap-2 text-xs font-semibold"><input type="radio" name="dm" ${checkoutDraft.deliveryMethod === 'outside' ? 'checked' : ''} onchange="setDeliveryMethod('outside')" /> ঢাকার বাইরে</span><span class="text-xs font-bold text-[#0E9A4D] tabular-nums">${formatBDT(state.settings.outsideDhakaCharge ?? 150)}</span></label>
+                  <label class="p-3 rounded-xl border cursor-pointer flex items-center justify-between ${checkoutDraft.deliveryMethod === 'pickup' ? 'border-[#0E9A4D] bg-emerald-50/60' : 'border-slate-200'}"><span class="flex items-center gap-2 text-xs font-semibold"><input type="radio" name="dm" ${checkoutDraft.deliveryMethod === 'pickup' ? 'checked' : ''} onchange="setDeliveryMethod('pickup')" /> শপ পিকআপ</span><span class="text-xs font-bold text-[#0E9A4D]">Free</span></label>
+                </div>
+                <div><label class="block text-xs font-semibold mb-1">অর্ডার নোট (ঐচ্ছিক)</label><input type="text" value="${escapeHtml(checkoutDraft.notes)}" oninput="checkoutDraft.notes=this.value" class="w-full h-10 px-3 rounded-lg border border-slate-300 text-sm" placeholder="বিশেষ নির্দেশনা..." /></div>
+              </section>
+              <section class="bg-white rounded-2xl border border-slate-200 p-5 space-y-4">
+                <div class="flex justify-between border-b pb-2"><h2 class="font-display font-bold text-base">২. ${totals.advPct}% অ্যাডভান্স পেমেন্ট</h2><span class="text-xs font-bold text-[#EA580C] tabular-nums">${formatBDT(totals.advance)}</span></div>
+                <div class="grid grid-cols-3 gap-2.5">${['bKash', 'Nagad', 'Rocket'].map(m => `<button type="button" onclick="setCheckoutPaymentMethod('${m}')" class="h-11 rounded-xl border text-xs sm:text-sm font-bold ${checkoutDraft.paymentMethod === m ? 'border-[#0E9A4D] bg-[#0E9A4D] text-white' : 'border-slate-200 bg-slate-50'}">${m}</button>`).join('')}</div>
+                <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 flex flex-wrap items-center justify-between gap-3"><div><p class="text-xs text-emerald-800">নিচের <strong>${escapeHtml(checkoutDraft.paymentMethod)}</strong> নম্বরে <strong class="tabular-nums">${formatBDT(totals.advance)}</strong> পাঠান:</p><p class="font-display font-bold text-lg text-[#0E9A4D] tabular-nums">${escapeHtml(depositNumber)}</p></div><button type="button" onclick="copyText('${escapeHtml(depositNumber)}', 'নম্বর কপি করা হয়েছে!')" class="h-9 px-3 rounded-lg bg-white border border-emerald-300 text-xs font-bold text-emerald-800">কপি করুন</button></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div><label class="block text-xs font-semibold mb-1">সেন্ডার নম্বর (01XXXXXXXXX) *</label><input type="tel" required value="${escapeHtml(checkoutDraft.senderNumber)}" oninput="checkoutDraft.senderNumber=this.value" class="w-full h-10 px-3 rounded-lg border border-slate-300 text-sm tabular-nums" placeholder="017XXXXXXXX" /></div>
+                  <div><label class="block text-xs font-semibold mb-1">Transaction ID / TrxID *</label><input type="text" required value="${escapeHtml(checkoutDraft.trxId)}" oninput="checkoutDraft.trxId=this.value" class="w-full h-10 px-3 rounded-lg border border-slate-300 text-sm uppercase" placeholder="TrxID" /></div>
+                </div>
+                <div><label class="block text-xs font-semibold mb-1">পেমেন্ট স্ক্রিনশট আপলোড (ঐচ্ছিক)</label><input type="file" accept="image/*" onchange="handleCheckoutScreenshot(this)" class="block w-full text-xs text-slate-600" />${checkoutDraft.screenshotPreview ? `<img src="${checkoutDraft.screenshotPreview}" class="mt-2 h-24 rounded-lg border object-contain" />` : ''}</div>
+              </section>
+            </div>
+            <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 p-5 space-y-4 lg:sticky lg:top-28">
+              <h2 class="font-display font-bold text-base border-b pb-2">অর্ডার সামারি (${items.length})</h2>
+              <div class="space-y-3 max-h-60 overflow-y-auto">${items.map((item, idx) => `<div class="flex items-center gap-3 pb-2 border-b last:border-0"><div class="w-12 h-10 rounded bg-slate-100 overflow-hidden shrink-0">${renderImg((item.images && item.images[0]) || '', item.name)}</div><div class="flex-1 min-w-0"><p class="text-xs font-semibold truncate">${escapeHtml(item.name)}</p><p class="text-[11px] text-slate-500 tabular-nums">${formatBDT(item.price)} × ${item.qty}</p></div><div class="flex items-center gap-1"><button type="button" onclick="adjustCheckoutItemQty(${idx}, -1)" class="w-6 h-6 rounded border text-xs font-bold">-</button><span class="w-5 text-center text-xs font-bold tabular-nums">${item.qty}</span><button type="button" onclick="adjustCheckoutItemQty(${idx}, 1)" class="w-6 h-6 rounded border text-xs font-bold">+</button></div></div>`).join('')}</div>
+              <div class="space-y-2 pt-3 border-t text-sm">
+                <div class="flex justify-between text-slate-600"><span>পণ্যের মূল্য</span><span class="font-semibold tabular-nums">${formatBDT(totals.subtotal)}</span></div>
+                <div class="flex justify-between text-slate-600"><span>ডেলিভারি চার্জ</span><span class="font-semibold tabular-nums">${totals.deliveryCharge === 0 ? 'Free' : formatBDT(totals.deliveryCharge)}</span></div>
+                <div class="flex justify-between font-bold text-base pt-2 border-t"><span>মোট মূল্য</span><span class="tabular-nums">${formatBDT(totals.total)}</span></div>
+                <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 flex justify-between items-center text-emerald-900"><span class="text-xs font-bold">অ্যাডভান্স (${totals.advPct}%)</span><span class="text-base font-bold text-[#0E9A4D] tabular-nums">${formatBDT(totals.advance)}</span></div>
+                <div class="p-3 rounded-xl bg-orange-50 border border-orange-200 flex justify-between items-center text-orange-900"><span class="text-xs font-semibold">বাকি টাকা (COD)</span><span class="text-sm font-bold text-[#EA580C] tabular-nums">${formatBDT(totals.remaining)}</span></div>
+              </div>
+              <button type="submit" class="w-full h-12 rounded-xl bg-[#0E9A4D] hover:bg-[#0A7A3C] text-white font-bold text-sm">${t('confirmOrderBtn')}</button>
+            </div>
+          </form>
+        </div>
+      `;
+    }
+
+    function renderOrderSuccess() {
+      const o = state.lastOrder; if (!o) return renderHome();
+      const waPhone = (state.settings.whatsappNumber || '8801711000000').replace(/\D/g, '');
+      const waMsg = encodeURIComponent(`Order ID: ${o.orderId}\nনাম: ${o.customerName}\nমোবাইল: ${o.phone}\nমোট: ৳${o.totalAmount}\nঅ্যাডভান্স (${o.advancePercent}%): ৳${o.advanceAmount} (${o.paymentMethod}, TrxID: ${o.trxId})\nবাকি COD: ৳${o.remainingAmount}`);
+      return `
+        <div class="max-w-xl mx-auto bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 text-center space-y-5 animate-in">
+          <div class="w-16 h-16 rounded-full bg-emerald-100 text-[#0E9A4D] mx-auto flex items-center justify-center text-3xl font-bold">✓</div>
+          <div><h1 class="font-display text-2xl font-bold">অর্ডার সফলভাবে জমা হয়েছে!</h1><p class="text-sm text-slate-600 mt-1">Status: <strong>${escapeHtml(o.status)}</strong></p></div>
+          <div class="bg-slate-50 rounded-xl border p-4 text-left space-y-2 text-sm">
+            <div class="flex justify-between"><span class="text-slate-500">Order ID:</span><strong class="tabular-nums">${escapeHtml(o.orderId)}</strong></div>
+            <div class="flex justify-between"><span class="text-emerald-700">অ্যাডভান্স (${o.advancePercent}%):</span><strong class="text-[#0E9A4D] tabular-nums">${formatBDT(o.advanceAmount)} (${escapeHtml(o.paymentMethod)})</strong></div>
+            <div class="flex justify-between"><span class="text-orange-700">বাকি COD:</span><strong class="text-[#EA580C] tabular-nums">${formatBDT(o.remainingAmount)}</strong></div>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <a href="https://wa.me/${waPhone}?text=${waMsg}" target="_blank" rel="noopener noreferrer" class="flex-1 h-11 rounded-xl bg-[#0E9A4D] text-white font-bold text-sm flex items-center justify-center">WhatsApp-এ অর্ডার কনফার্ম করুন</a>
+            <button type="button" onclick="state.routeParams={lastTrackId:'${escapeHtml(o.orderId)}',lastTrackPhone:'${escapeHtml(o.phone)}',trackedOrder:state.lastOrder}; navigate('track');" class="h-11 px-5 rounded-xl border text-sm font-semibold">ট্র্যাক করুন</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAccount() {
+      if (!state.currentUser) {
+        return `<div class="max-w-md mx-auto bg-white rounded-2xl border p-8 text-center space-y-4"><h1 class="font-display text-xl font-bold">আপনার অ্যাকাউন্টে প্রবেশ করুন</h1><div class="flex gap-3 justify-center"><button onclick="openAuthModal('login')" class="h-10 px-6 rounded-lg bg-[#0E9A4D] text-white text-sm font-semibold">লগইন করুন</button><button onclick="openAuthModal('register')" class="h-10 px-6 rounded-lg border text-sm font-semibold">রেজিস্ট্রেশন</button></div></div>`;
+      }
+      const myOrders = state.orders.filter(o => (state.currentUser.uid && o.userId === state.currentUser.uid) || (state.currentUser.phone && o.phone === state.currentUser.phone));
+      const wishProducts = state.wishlist.map(id => state.products.find(p => p.id === id)).filter(Boolean);
+      return `
+        <div class="space-y-6 animate-in">
+          <div class="bg-white rounded-2xl border p-5 flex justify-between items-center"><div><h1 class="font-display text-xl font-bold">${escapeHtml(state.currentUser.name || 'Customer')}</h1><p class="text-xs text-slate-500">${escapeHtml(state.currentUser.email)} ${state.currentUser.phone ? '· ' + escapeHtml(state.currentUser.phone) : ''}</p></div><button onclick="logoutCustomer()" class="h-9 px-4 rounded-lg border border-red-200 text-red-600 text-xs font-semibold">লগআউট</button></div>
+          <section class="bg-white rounded-2xl border p-5 space-y-3"><h2 class="font-bold text-base">আমার অর্ডার (${myOrders.length})</h2>${myOrders.length ? myOrders.map(o => `<div class="py-2.5 border-b last:border-0 flex justify-between text-sm"><div><strong class="tabular-nums">${escapeHtml(o.orderId)}</strong> · ${formatBDT(o.totalAmount)}</div><span class="text-xs font-bold text-[#0E9A4D]">${escapeHtml(o.status)}</span></div>`).join('') : `<p class="text-xs text-slate-500">কোনো অর্ডার নেই।</p>`}</section>
+          <section><h2 class="font-bold text-base mb-3">উইশলিস্ট (${wishProducts.length})</h2><div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">${wishProducts.map(renderProductCard).join('')}</div></section>
+        </div>
+      `;
+    }
+
+    function renderCartDrawer() {
+      const body = document.getElementById('cart-drawer-items'), footer = document.getElementById('cart-drawer-footer');
+      const detailed = state.cart.map(c => { const p = state.products.find(x => x.id === c.id); return p ? { ...p, qty: c.qty } : null; }).filter(Boolean);
+      if (!detailed.length) { body.innerHTML = `<div class="text-center py-12 text-slate-500 text-sm">${t('emptyCart')}</div>`; footer.innerHTML = `<button onclick="toggleCartDrawer(false); navigate('home');" class="w-full h-11 rounded-xl bg-[#0E9A4D] text-white font-semibold text-sm">শপিং শুরু করুন</button>`; return; }
+      const subtotal = detailed.reduce((s, i) => s + i.price * i.qty, 0), advPct = Number(state.settings.advancePercent ?? 13);
+      body.innerHTML = detailed.map(item => `<div class="flex gap-3 p-3 rounded-xl border bg-white"><div class="w-16 h-14 rounded-lg bg-slate-100 overflow-hidden shrink-0">${renderImg((item.images && item.images[0]) || '', item.name)}</div><div class="flex-1 min-w-0"><h4 class="text-xs font-semibold line-clamp-2">${escapeHtml(item.name)}</h4><p class="text-sm font-bold text-[#0E9A4D] tabular-nums">${formatBDT(item.price)}</p><div class="flex justify-between mt-2"><div class="flex items-center border rounded-lg"><button onclick="updateCartQty('${escapeHtml(item.id)}', -1)" class="w-7 h-7 text-xs font-bold">-</button><span class="w-7 text-center text-xs font-bold tabular-nums">${item.qty}</span><button onclick="updateCartQty('${escapeHtml(item.id)}', 1)" class="w-7 h-7 text-xs font-bold">+</button></div><button onclick="removeFromCart('${escapeHtml(item.id)}')" class="text-xs text-red-500">মুছুন</button></div></div></div>`).join('');
+      footer.innerHTML = `<div class="space-y-1 text-sm"><div class="flex justify-between font-bold"><span>মোট</span><span class="tabular-nums">${formatBDT(subtotal)}</span></div><p class="text-xs text-slate-600">আনুমানিক ${advPct}% অ্যাডভান্স: <strong class="text-[#0E9A4D] tabular-nums">${formatBDT(Math.round(subtotal * advPct / 100))}</strong></p></div><button onclick="proceedToCartCheckout()" class="w-full h-11 rounded-xl bg-[#0E9A4D] text-white font-bold text-sm">চেকআউট করুন →</button>`;
+    }
+
+    function renderCurrentRoute() {
+      const root = document.getElementById('main-content'); if (!root) return;
+      if (state.route === 'category' || state.route === 'search') root.innerHTML = renderCategoryOrSearch();
+      else if (state.route === 'product') root.innerHTML = renderProductDetails();
+      else if (state.route === 'checkout') root.innerHTML = renderCheckout();
+      else if (state.route === 'order-success') root.innerHTML = renderOrderSuccess();
+      else if (state.route === 'track') root.innerHTML = renderTrackOrder();
+      else if (state.route === 'account') root.innerHTML = renderAccount();
+      else if (state.route === 'compare') root.innerHTML = renderCompareView();
+      else root.innerHTML = renderHome();
+      renderHeaderAndBars();
+    }
+
+    function navigate(route, params = {}, updateHash = true) {
+      state.route = route; state.routeParams = params;
+      if (route !== 'checkout') state.checkoutDirectItems = null;
+      if (updateHash) {
+        let hash = '#/';
+        if (route === 'product' && params.id) hash = `#/product/${params.id}`;
+        else if (['checkout', 'track', 'account', 'compare'].includes(route)) hash = `#/${route}`;
+        else if (route === 'category') hash = `#/category/${encodeURIComponent(state.activeCategory || 'all')}`;
+        if (window.location.hash !== hash) window.location.hash = hash;
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      renderCurrentRoute();
+    }
+
+    function syncRouteFromHash() {
+      const hash = window.location.hash || '#/';
+      if (hash.startsWith('#/product/')) { state.selectedGalleryImg = 0; state.pdpQty = 1; navigate('product', { id: hash.replace('#/product/', '') }, false); }
+      else if (hash.startsWith('#/checkout')) navigate('checkout', {}, false);
+      else if (hash.startsWith('#/track')) navigate('track', {}, false);
+      else if (hash.startsWith('#/account')) navigate('account', {}, false);
+      else if (hash.startsWith('#/compare')) navigate('compare', {}, false);
+      else if (hash.startsWith('#/category/')) { state.activeCategory = decodeURIComponent(hash.replace('#/category/', '')) || 'all'; navigate('category', {}, false); }
+      else navigate('home', {}, false);
+    }
+
+    function toggleLanguage() { state.lang = state.lang === 'bn' ? 'en' : 'bn'; localStorage.setItem(STORAGE_KEYS.LANG, state.lang); renderHeaderAndBars(); renderCurrentRoute(); }
+    function selectCategory(slug) { state.activeCategory = slug || 'all'; state.searchQuery = ''; navigate('category', { slug: state.activeCategory }); }
+    function openProduct(id) { state.selectedGalleryImg = 0; state.pdpQty = 1; navigate('product', { id }); }
+    function changePdpQty(delta) { state.pdpQty = Math.max(1, state.pdpQty + delta); renderCurrentRoute(); }
+    function handleLiveSearch(val) {
+      state.searchQuery = val;
+      const box = document.getElementById('search-suggestions'); if (!box) return;
+      const q = val.trim().toLowerCase(); if (!q) { box.classList.add('hidden'); return; }
+      const matches = getVisibleProducts().filter(p => (p.name || '').toLowerCase().includes(q) || (p.brand || '').toLowerCase().includes(q) || (p.sku || '').toLowerCase().includes(q)).slice(0, 6);
+      box.innerHTML = matches.length ? matches.map(p => `<button type="button" onclick="document.getElementById('search-suggestions').classList.add('hidden'); openProduct('${escapeHtml(p.id)}');" class="w-full p-2.5 flex items-center gap-3 hover:bg-slate-50 text-left border-b last:border-0"><div class="w-10 h-8 rounded bg-slate-100 overflow-hidden shrink-0">${renderImg((p.images && p.images[0]) || '', p.name)}</div><div class="flex-1 min-w-0"><p class="text-xs font-semibold truncate">${escapeHtml(p.name)}</p><p class="text-[11px] font-bold text-[#0E9A4D] tabular-nums">${formatBDT(p.price)}</p></div></button>`).join('') : `<div class="p-3 text-xs text-slate-500">কোনো পণ্য পাওয়া যায়নি</div>`;
+      box.classList.remove('hidden');
+    }
+    function submitSearch(val) { document.getElementById('search-suggestions')?.classList.add('hidden'); state.searchQuery = val || ''; navigate('search'); }
+    function clearSearch() { state.searchQuery = ''; document.getElementById('desktop-search-input').value = ''; document.getElementById('mobile-search-input').value = ''; navigate('home'); }
+    function focusMobileSearch() { window.scrollTo({ top: 0, behavior: 'smooth' }); setTimeout(() => document.getElementById('mobile-search-input')?.focus(), 200); }
+    function shiftHero(d) { const c = state.banners.filter(b => b.isActive !== false).length || 1; state.heroIndex = (state.heroIndex + d + c) % c; if (state.route === 'home') renderCurrentRoute(); }
+    function startHeroAutoSlide() { if (state.heroTimer) clearInterval(state.heroTimer); state.heroTimer = setInterval(() => { if (state.route === 'home') shiftHero(1); }, 4800); }
+    function saveCart() { localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(state.cart)); renderHeaderAndBars(); renderCartDrawer(); }
+    function addToCart(id, qty = 1) { const ex = state.cart.find(c => c.id === id); if (ex) ex.qty += qty; else state.cart.push({ id, qty }); saveCart(); showToast('পণ্যটি কার্টে যোগ করা হয়েছে!'); }
+    function updateCartQty(id, delta) { const i = state.cart.find(c => c.id === id); if (!i) return; i.qty += delta; if (i.qty <= 0) state.cart = state.cart.filter(c => c.id !== id); saveCart(); }
+    function removeFromCart(id) { state.cart = state.cart.filter(c => c.id !== id); saveCart(); }
+    function toggleCartDrawer(open) { const d = document.getElementById('cart-drawer'); if (open) { renderCartDrawer(); d.classList.remove('hidden'); } else d.classList.add('hidden'); }
+    function proceedToCartCheckout() { toggleCartDrawer(false); state.checkoutDirectItems = null; navigate('checkout'); }
+    function buyNowSingle(id) { const p = state.products.find(x => x.id === id); if (!p) return; state.checkoutDirectItems = [{ ...p, qty: state.route === 'product' ? state.pdpQty : 1 }]; navigate('checkout'); }
+    function toggleWishlist(id) { state.wishlist = state.wishlist.includes(id) ? state.wishlist.filter(x => x !== id) : [...state.wishlist, id]; localStorage.setItem(STORAGE_KEYS.WISHLIST, JSON.stringify(state.wishlist)); showToast('উইশলিস্ট আপডেট হয়েছে'); renderCurrentRoute(); }
+    function toggleCompare(id) { if (state.compareIds.includes(id)) state.compareIds = state.compareIds.filter(x => x !== id); else { if (state.compareIds.length >= 4) return showToast('সর্বোচ্চ ৪টি পণ্য তুলনা করা যাবে', 'error'); state.compareIds.push(id); } localStorage.setItem(STORAGE_KEYS.COMPARE, JSON.stringify(state.compareIds)); renderHeaderAndBars(); renderCurrentRoute(); }
+    function clearCompare() { state.compareIds = []; localStorage.setItem(STORAGE_KEYS.COMPARE, '[]'); renderHeaderAndBars(); }
+    function shareProduct(id) { const url = window.location.href.split('#')[0] + '#/product/' + id; navigator.share ? navigator.share({ title: 'Laptop Bazar BD', url }).catch(() => copyText(url)) : copyText(url, 'লিংক কপি করা হয়েছে!'); }
+    function copyText(txt, msg = 'কপি করা হয়েছে!') { navigator.clipboard?.writeText(txt).then(() => showToast(msg)).catch(() => showToast(txt, 'info')); }
+    function onCheckoutDivisionChange(div) { checkoutDraft.division = div; const ds = Object.keys(BD_LOCATIONS[div] || {}); checkoutDraft.district = ds[0] || ''; checkoutDraft.thana = ((BD_LOCATIONS[div] && BD_LOCATIONS[div][checkoutDraft.district]) || [])[0] || ''; renderCurrentRoute(); }
+    function onCheckoutDistrictChange(dist) { checkoutDraft.district = dist; checkoutDraft.thana = ((BD_LOCATIONS[checkoutDraft.division] && BD_LOCATIONS[checkoutDraft.division][dist]) || [])[0] || ''; renderCurrentRoute(); }
+    function setDeliveryMethod(m) { checkoutDraft.deliveryMethod = m; renderCurrentRoute(); }
+    function setCheckoutPaymentMethod(m) { checkoutDraft.paymentMethod = m; renderCurrentRoute(); }
+    function adjustCheckoutItemQty(idx, d) { if (state.checkoutDirectItems && state.checkoutDirectItems[idx]) { state.checkoutDirectItems[idx].qty = Math.max(1, state.checkoutDirectItems[idx].qty + d); renderCurrentRoute(); } else if (state.cart[idx]) { state.cart[idx].qty = Math.max(1, state.cart[idx].qty + d); saveCart(); renderCurrentRoute(); } }
+    function handleCheckoutScreenshot(inp) { const f = inp.files && inp.files[0]; if (!f) return; checkoutDraft.screenshotFile = f; const r = new FileReader(); r.onload = () => { checkoutDraft.screenshotPreview = String(r.result || ''); renderCurrentRoute(); }; r.readAsDataURL(f); }
+
+    async function handleCheckoutSubmit(e) {
+      e.preventDefault();
+      const items = getCheckoutItems(); if (!items.length) return showToast(t('emptyCart'), 'error');
+      if (!checkoutDraft.name.trim()) return showToast(t('errNameRequired'), 'error');
+      if (!validateBDPhone(checkoutDraft.phone)) return showToast(t('errPhoneInvalid'), 'error');
+      if (!checkoutDraft.address.trim()) return showToast(t('errAddressRequired'), 'error');
+      if (!validateBDPhone(checkoutDraft.senderNumber)) return showToast('সঠিক ১১ সংখ্যার পেমেন্ট সেন্ডার নম্বর দিন (01XXXXXXXXX)।', 'error');
+      if (!checkoutDraft.trxId.trim() || checkoutDraft.trxId.trim().length < 4) return showToast('সঠিক Transaction ID / TrxID লিখুন।', 'error');
+      setLoading(true, 'অর্ডার জমা হচ্ছে...');
+      try {
+        const screenshotUrl = checkoutDraft.screenshotFile ? await DataService.uploadImageFile(checkoutDraft.screenshotFile, 'payment_screenshots') : '';
+        const totals = computeCheckoutTotals(items), orderId = 'LB-' + Math.floor(100000 + Math.random() * 900000);
+        const orderData = {
+          orderId, userId: state.currentUser ? state.currentUser.uid : null, customerName: checkoutDraft.name.trim(), phone: checkoutDraft.phone.trim(), whatsapp: checkoutDraft.whatsapp.trim(),
+          division: checkoutDraft.division, district: checkoutDraft.district, thana: checkoutDraft.thana, address: checkoutDraft.address.trim(),
+          deliveryMethod: checkoutDraft.deliveryMethod, deliveryCharge: totals.deliveryCharge, notes: checkoutDraft.notes.trim(),
+          items: items.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, sku: i.sku || '' })),
+          subtotal: totals.subtotal, totalAmount: totals.total, advancePercent: totals.advPct, advanceAmount: totals.advance, remainingAmount: totals.remaining,
+          paymentMethod: checkoutDraft.paymentMethod, trxId: checkoutDraft.trxId.trim().toUpperCase(), senderNumber: checkoutDraft.senderNumber.trim(), screenshotUrl,
+          status: 'Pending Payment Verification', createdAt: Date.now()
+        };
+        await DataService.createOrder(orderData);
+        if (!state.checkoutDirectItems) { state.cart = []; saveCart(); }
+        state.checkoutDirectItems = null; state.lastOrder = orderData; checkoutDraft.trxId = ''; checkoutDraft.screenshotFile = null; checkoutDraft.screenshotPreview = '';
+        showToast('অর্ডার সফলভাবে কনফার্ম হয়েছে!');
+        navigate('order-success');
+      } catch (err) { showToast('অর্ডার জমা দিতে সমস্যা হয়েছে।', 'error'); } finally { setLoading(false); }
+    }
+
+    async function handleTrackSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('track-order-id').value.trim(), phone = document.getElementById('track-phone').value.trim();
+      if (!validateBDPhone(phone)) return showToast(t('errPhoneInvalid'), 'error');
+      setLoading(true, 'খোঁজা হচ্ছে...');
+      try {
+        const found = await DataService.findOrderForTracking(id, phone);
+        state.routeParams.lastTrackId = id; state.routeParams.lastTrackPhone = phone; state.routeParams.trackedOrder = found;
+        if (!found) showToast('অর্ডার পাওয়া যায়নি!', 'error');
+        renderCurrentRoute();
+      } finally { setLoading(false); }
+    }
+
+    function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
+    let authMode = 'login';
+    function openAuthModal(mode = 'login') { switchAuthTab(mode); document.getElementById('auth-modal').classList.remove('hidden'); }
+    function switchAuthTab(mode) {
+      authMode = mode; const isReg = mode === 'register';
+      document.getElementById('auth-name-wrap').classList.toggle('hidden', !isReg);
+      document.getElementById('auth-phone-wrap').classList.toggle('hidden', !isReg);
+      document.getElementById('auth-submit-btn').textContent = isReg ? 'অ্যাকাউন্ট তৈরি করুন' : 'লগইন করুন';
+    }
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value.trim(), password = document.getElementById('auth-password').value, name = document.getElementById('auth-name').value.trim(), phone = document.getElementById('auth-phone').value.trim();
+      if (authMode === 'register' && (!name || !validateBDPhone(phone))) return showToast('সঠিক নাম ও ১১ সংখ্যার মোবাইল নম্বর দিন।', 'error');
+      setLoading(true, 'লগইন হচ্ছে...');
+      try {
+        if (IS_FIREBASE_CONFIGURED && fbAuth) {
+          if (authMode === 'register') {
+            const cred = await fbAuth.createUserWithEmailAndPassword(email, password);
+            await cred.user.updateProfile({ displayName: name });
+            await fbDb.collection('users').doc(cred.user.uid).set({ uid: cred.user.uid, name, email, phone, role: 'customer', createdAt: Date.now() });
+          } else { await fbAuth.signInWithEmailAndPassword(email, password); }
+        } else {
+          const db = readSandboxDb();
+          if (authMode === 'register') {
+            const u = { uid: 'cust-' + Date.now(), name, email, phone, role: 'customer', createdAt: Date.now() };
+            db.users = [u, ...(db.users || [])]; writeSandboxDb(db); state.currentUser = u;
+          } else {
+            state.currentUser = (db.users || []).find(u => u.email.toLowerCase() === email.toLowerCase()) || { uid: 'cust-' + Date.now(), name: email.split('@')[0], email, phone: '', role: 'customer' };
+          }
+          localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(state.currentUser));
         }
+        closeModal('auth-modal'); showToast('সফলভাবে লগইন হয়েছে!'); renderHeaderAndBars(); renderCurrentRoute();
+      } catch (err) { showToast(err.message || 'লগইন ব্যর্থ হয়েছে', 'error'); } finally { setLoading(false); }
+    }
+    async function logoutCustomer() { if (IS_FIREBASE_CONFIGURED && fbAuth) await fbAuth.signOut(); state.currentUser = null; localStorage.removeItem(STORAGE_KEYS.USER); renderHeaderAndBars(); renderCurrentRoute(); }
+    function openSellModal() { document.getElementById('sell-modal').classList.remove('hidden'); }
+    async function handleSellSubmit(e) {
+      e.preventDefault();
+      const phone = document.getElementById('sell-phone').value.trim(); if (!validateBDPhone(phone)) return showToast(t('errPhoneInvalid'), 'error');
+      await DataService.submitSellRequest({ id: 'sell-' + Date.now(), sellerName: document.getElementById('sell-name').value.trim(), phone, deviceTitle: document.getElementById('sell-title').value.trim(), condition: document.getElementById('sell-condition').value, askingPrice: Number(document.getElementById('sell-price').value), details: document.getElementById('sell-details').value.trim(), createdAt: Date.now() });
+      closeModal('sell-modal'); e.target.reset(); showToast('বিক্রির অনুরোধ পাঠানো হয়েছে!');
+    }
+    function openPriceAlertModal(id, name) { document.getElementById('alert-product-id').value = id; document.getElementById('alert-product-name').textContent = name; document.getElementById('price-alert-modal').classList.remove('hidden'); }
+    async function handlePriceAlertSubmit(e) {
+      e.preventDefault();
+      await DataService.submitPriceAlert({ id: 'alert-' + Date.now(), productId: document.getElementById('alert-product-id').value, productName: document.getElementById('alert-product-name').textContent, contact: document.getElementById('alert-contact').value.trim(), createdAt: Date.now() });
+      closeModal('price-alert-modal'); e.target.reset(); showToast('অ্যালার্ট সেভ করা হয়েছে!');
+    }
+    function toggleAssistant(force) { const p = document.getElementById('assistant-popup'); p.classList.toggle('hidden', !(typeof force === 'boolean' ? force : p.classList.contains('hidden'))); }
+    function sendAssistantQuick(msg) { document.getElementById('assistant-input').value = msg; handleAssistantSubmit({ preventDefault: () => {} }); }
+    function handleAssistantSubmit(e) {
+      e.preventDefault(); const inp = document.getElementById('assistant-input'), text = (inp.value || '').trim(); if (!text) return; inp.value = '';
+      const box = document.getElementById('assistant-messages'); box.innerHTML += `<div class="ml-8 bg-[#0E9A4D] text-white rounded-xl p-2.5 text-xs">${escapeHtml(text)}</div>`;
+      const q = text.toLowerCase();
+      let reply = 'ধন্যবাদ! আমাদের শপে নতুন ও ব্যবহৃত সকল ব্র্যান্ডের ল্যাপটপ রয়েছে। যেকোনো পণ্যে ক্লিক করে অর্ডার করতে পারেন।';
+      if (q.includes('১৩%') || q.includes('13%') || q.includes('অ্যাডভান্স')) reply = `অর্ডার কনফার্ম করতে মোট মূল্যের মাত্র ${state.settings.advancePercent || 13}% অ্যাডভান্স দিতে হবে এবং বাকি টাকা Cash on Delivery দেবেন।`;
+      else if (q.includes('৫০') || q.includes('50') || q.includes('বাজেট')) reply = '৪০-৫৫ হাজার টাকার মধ্যে HP EliteBook 840 G8 (৳41,900) এবং ThinkPad X1 Carbon (৳54,500) সেরা পছন্দ!';
+      else if (q.includes('ডেলিভারি')) reply = `ঢাকার ভেতরে ৳${state.settings.insideDhakaCharge ?? 80} এবং ঢাকার বাইরে ৳${state.settings.outsideDhakaCharge ?? 150}।`;
+      setTimeout(() => { box.innerHTML += `<div class="mr-6 bg-white border rounded-xl p-2.5 text-xs">${escapeHtml(reply)}</div>`; box.scrollTop = box.scrollHeight; }, 300);
+    }
 
-        async function register() {
-            const n = document.getElementById('rName').value, e = document.getElementById('rEmail').value, p = document.getElementById('rPass').value;
-            try { const res = await auth.createUserWithEmailAndPassword(e, p); await db.collection('users').doc(res.user.uid).set({name:n, email:e, walletBalance:0}); } catch(err) { alert(err.message); }
-        }
-        async function login() {
-            const e = document.getElementById('lEmail').value, p = document.getElementById('lPass').value;
-            try { await auth.signInWithEmailAndPassword(e, p); } catch(err) { alert(err.message); }
-        }
-        function logout() { auth.signOut(); }
-
-        function loadData() {
-            db.collection('users').doc(user.uid).onSnapshot(doc => { 
-                document.getElementById('uName').innerText = doc.data().name; 
-                document.getElementById('pName').innerText = doc.data().name; 
-                document.getElementById('pEmail').innerText = doc.data().email;
-                document.getElementById('wBal').innerText = "৳ " + doc.data().walletBalance.toFixed(2);
-            });
-
-            db.collection('products').onSnapshot(snap => {
-                const cont = document.getElementById('productContainer'); cont.innerHTML = '';
-                snap.forEach(doc => {
-                    const p = doc.data(); const d = document.createElement('div'); d.className = 'product-card';
-                    d.innerHTML = `<img src="${p.image}"><div class="product-info"><p style="font-size:13px; font-weight:600;">${p.name}</p><p style="color:var(--p); font-weight:700;">৳ ${p.price}</p></div>`;
-                    d.onclick = () => openDetails(p); cont.appendChild(d);
-                });
-            });
-
-            db.collection('paymentMethods').onSnapshot(snap => {
-                const pcont = document.getElementById('payMethods'), acont = document.getElementById('addPayMethods');
-                pcont.innerHTML = `<div class="select-item" onclick="selectPay('Wallet','',this)"><i class="fa-solid fa-wallet"></i><br>Wallet</div>`;
-                acont.innerHTML = '';
-                snap.forEach(doc => {
-                    const m = doc.data(); const html = `<div class="select-item" onclick="selectPay('${m.name}','${m.number}',this)"><img src="${m.logoUrl}">${m.name}</div>`;
-                    pcont.innerHTML += html; acont.innerHTML += html;
-                });
-            });
-
-            db.collection('orders').where('userId', '==', user.uid).onSnapshot(snap => {
-                const cont = document.getElementById('orderList'); cont.innerHTML = '';
-                snap.forEach(doc => {
-                    const o = doc.data();
-                    cont.innerHTML += `<div class="card"><span class="badge ${o.status}">${o.status}</span><b>${o.pName}</b><br><small>মোট: ৳${o.totalPrice} (১২% অগ্রিম: ৳${o.advance})</small></div>`;
-                });
-            });
-        }
-
-        function openDetails(p) {
-            selP = p; document.getElementById('dImg').src = p.image; document.getElementById('dTitle').innerText = p.name;
-            document.getElementById('dPrice').innerText = "৳ " + p.price;
-            document.getElementById('advAmt').innerText = (p.price * 0.12).toFixed(2);
-            const vcont = document.getElementById('vContainer'); vcont.innerHTML = '';
-            p.variants.forEach(v => { vcont.innerHTML += `<div class="select-item" onclick="selVar(this,'${v}')">${v}</div>`; });
-            toggleScreen('detailsScreen');
-        }
-
-        function selVar(el, v) { document.querySelectorAll('#vContainer .select-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); selV = v; }
-        
-        function selectPay(name, num, el) {
-            selM = name; 
-            document.querySelectorAll('.select-item').forEach(i => i.classList.remove('active'));
-            el.classList.add('active');
-            
-            const pBox = document.getElementById('payNumberBox');
-            const aBox = document.getElementById('addPayNumberBox');
-            
-            if(num !== '') {
-                pBox.style.display = 'flex'; aBox.style.display = 'flex';
-                document.getElementById('targetNumber').innerText = num;
-                document.getElementById('addTargetNumber').innerText = num;
-            } else {
-                pBox.style.display = 'none'; aBox.style.display = 'none';
-            }
-        }
-
-        function copyNumber() {
-            const num = document.getElementById('targetNumber').innerText;
-            navigator.clipboard.writeText(num); alert("নম্বর কপি হয়েছে!");
-        }
-        function copyNumberAdd() {
-            const num = document.getElementById('addTargetNumber').innerText;
-            navigator.clipboard.writeText(num); alert("নম্বর কপি হয়েছে!");
-        }
-
-        async function placeOrder() {
-            const addr = document.getElementById('dAddr').value, trx = document.getElementById('dTrx').value, adv = (selP.price * 0.12).toFixed(2);
-            if(!selV || !addr || !selM) return alert('সব তথ্য পূরণ করুন');
-            if(selM === 'Wallet') {
-                const uDoc = await db.collection('users').doc(user.uid).get();
-                if(uDoc.data().walletBalance < adv) return alert('ব্যালেন্স নেই');
-                await db.collection('users').doc(user.uid).update({ walletBalance: uDoc.data().walletBalance - adv });
-            }
-            await db.collection('orders').add({ userId: user.uid, pName: selP.name, totalPrice: selP.price, advance: adv, variant: selV, address: addr, paymentMethod: selM, trxId: trx || 'Wallet', status: 'Pending', timestamp: new Date() });
-            alert('অর্ডার সফল!'); toggleScreen('orderScreen');
-        }
-
-        async function addMoneyReq() {
-            const amt = document.getElementById('addAmt').value, trx = document.getElementById('addTrx').value;
-            if(!amt || !selM || !trx) return alert('সব তথ্য দিন');
-            await db.collection('walletReqs').add({ userId: user.uid, amount: Number(amt), method: selM, trxId: trx, status: 'Pending' });
-            alert('অনুরোধ পাঠানো হয়েছে!'); toggleScreen('homeScreen');
-        }
-    </script>
+    let deferredInstallPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredInstallPrompt = e; document.getElementById('pwa-install-btn')?.classList.remove('hidden'); document.getElementById('pwa-install-btn')?.classList.add('inline-flex'); });
+    async function triggerPWAInstall() { if (!deferredInstallPrompt) return; await deferredInstallPrompt.prompt(); deferredInstallPrompt = null; document.getElementById('pwa-install-btn')?.classList.add('hidden'); }
+    document.addEventListener('click', (ev) => { const b = document.getElementById('search-suggestions'), i = document.getElementById('desktop-search-input'); if (b && i && !b.contains(ev.target) && ev.target !== i) b.classList.add('hidden'); });
+    window.addEventListener('hashchange', syncRouteFromHash);
+    (async function initApp() { await DataService.init(); syncRouteFromHash(); startHeroAutoSlide(); })();
+  </script>
 </body>
-  </html>
+</html>
